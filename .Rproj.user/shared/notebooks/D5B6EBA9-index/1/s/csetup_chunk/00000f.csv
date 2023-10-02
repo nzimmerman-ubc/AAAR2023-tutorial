@@ -1,7 +1,0 @@
-"0",""
-"0","# Check for pacman and load"
-"0","if (!require(""pacman"")) install.packages(""pacman""); library(pacman)"
-"2","Loading required package: pacman
-"
-"0","# Install / load required packages"
-"0","p_load(DBI,RODBC,odbc,dbplyr,RMySQL,tidyverse,keyring,con2aqi,lubridate, stringr)"
