@@ -413,4 +413,6 @@ read_file_info <- function(filename) {
 
 That's it! Thanks for following along in today's tutorial! If you have any questions, feel free to reach out via email at [nzimmerman@mech.ubc.ca](mailto:nzimmerman@mech.ubc.ca)
 
+P.S. curious how I made this website? Super simple. You just need to name your output html file "index.html" and have a YAML file called "_site.yml" that describes your navigation bar. Then on GitHub, go to Settings --> Pages and you can render your markdown as a GitHub.io page. Ta-da!
+
 
