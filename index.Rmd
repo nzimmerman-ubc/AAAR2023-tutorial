@@ -180,7 +180,7 @@ So let's look at how we can do this in R. To do this, we're going to take advant
 
 I will show you three different ways of playing with some of this data:
 
-1. Pulling all the pollutant data into one data.table in R for a specified week at the Mahon Park site and calculating a pseudo-AQI (my time averaging is wrong for true AQI, but thi is a fictional example). There is a little package called con2aqi that converts concentrations to AQI that we will use here.
+1. Pulling all the pollutant data into one data.table in R for a specified week at the Mahon Park site and calculating a pseudo-AQI (my time averaging is wrong for true AQI, but this is a fictional example). There is a little package called con2aqi that converts concentrations to AQI that we will use here.
 
 2. Box plots across all our sites for each pollutant
 
@@ -195,6 +195,7 @@ These are just some simple examples, obviously everyone's data questions are uni
 no2_db = tbl(sql_conn,"no2_daily") %>% select(date,MP) %>% filter(between(date, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(NO2_MP = MP)
 
 o3_db = tbl(sql_conn,"o3_daily") %>% select(date,MP) %>% filter(between(date, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(O3_MP = MP)
+
 pm_db = tbl(sql_conn,"pm_daily") %>% select(date,MP) %>% filter(between(date, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(PM_MP = MP)
 
 #let's put it together into one dataframe for our local analysis
@@ -221,6 +222,7 @@ no2_plot <- ggplot(no2_tidy, aes(x = factor(site, levels = site_order), y = conc
   theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position="none") +
   scale_fill_discrete() +
   coord_cartesian(ylim = c(0,60))
+
 no2_plot
 
 
@@ -269,6 +271,8 @@ ggplot(no2_july, aes(x=ymd_hms(date), y=concentration, color=Grouping)) +
 # Part 3: Dashboards and plotting in Grafana
 
 Some of the figures we just generated are fine, or might be useful for a publication, but say we are routinely collecting and downloading data and we want to track our data as it is coming in (maybe we are routinely collecting data and want a quick / dynamic way to visualize). We can leverage our same SQL databases into the open-source Grafana dashboarding tool. Let's check it out!
+
+![Having fun at the AAAAR tutorial](celebrate.png)
 
 ## Create a read-only user in MySQL to interface with Grafana
 
