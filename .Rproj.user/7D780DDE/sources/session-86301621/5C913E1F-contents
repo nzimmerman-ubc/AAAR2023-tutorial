@@ -4,3 +4,4 @@ navbar:
     right:
       - text: "Home"
         href: index.html
+        
