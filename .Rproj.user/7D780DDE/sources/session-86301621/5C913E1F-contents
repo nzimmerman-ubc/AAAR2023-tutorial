@@ -1,7 +1,0 @@
-output_dir: "."
-navbar:
-    title: "2023 Data Wrangling Tutorial"
-    right:
-      - text: "Home"
-        href: index.html
-        

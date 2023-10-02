@@ -89,7 +89,7 @@ I like the 'pacman' package to streamline this process, since you can just give 
 if (!require("pacman")) install.packages("pacman"); library(pacman)
 
 # Install / load required packages
-p_load(DBI,RODBC,odbc,dbplyr,RMySQL,tidyverse,keyring,con2aqi,lubridate, stringr,plyr)
+p_load(DBI,RODBC,odbc,dbplyr,RMySQL,tidyverse,keyring,con2aqi,lubridate, stringr)
 ```
 
 ### R Set-up: SQL Connection
@@ -193,6 +193,7 @@ These are just some simple examples, obviously everyone's data questions are uni
 # Data processing 1: Let's say we are interested in calculating the AQI for the week of May 15 - 21, 2022 at the Mahon Park site (MP)
 
 no2_db = tbl(sql_conn,"no2_daily") %>% select(date,MP) %>% filter(between(date, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(NO2_MP = MP)
+
 o3_db = tbl(sql_conn,"o3_daily") %>% select(date,MP) %>% filter(between(date, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(O3_MP = MP)
 pm_db = tbl(sql_conn,"pm_daily") %>% select(date,MP) %>% filter(between(date, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(PM_MP = MP)
 
@@ -237,7 +238,7 @@ o3_plot <- ggplot(o3_tidy, aes(x = factor(site, levels = site_order), y = concen
 o3_plot
 
 # Repeat for PM2.5
-pm_tidy = tbl(sql_conn,"pm_daily") %>% select(-date) %>% show_query() %>% collect() %>% pivot_longer(everything(),names_to = "site", values_to = "concentration")
+pm_tidy = tbl(sql_conn,"pm_daily") %>% select(-date) %>% collect() %>% pivot_longer(everything(),names_to = "site", values_to = "concentration")
 
 pm_plot <- ggplot(pm_tidy, aes(x = factor(site, levels = site_order), y = concentration, fill=site)) +
   geom_boxplot() +
@@ -315,6 +316,7 @@ concatenated_cpc <- concatenated_cpc %>%
 knitr::kable(head(concatenated_cpc))
 
 ```
+## Create our SQL Table and Push Data
 Now that we are generally happy with the format of the data, let's ship it out to our SQL database and then get it into Grafana. Recall this will involve a few steps:
 
 1. If it doesn't already exist, make an empty table in your SQL database.
@@ -326,7 +328,10 @@ Now that we are generally happy with the format of the data, let's ship it out t
 
 #### FIRST TIME RUNNING
 
-# Remember you should only create the table once!
+initial_run_ex2=0
+
+if(initial_run_ex2==1){
+  # Remember you should only create the table once!
 dbCreateTable(sql_conn,name="wcpc", fields=concatenated_cpc)
 
 # Write our data to the SQL database
@@ -334,9 +339,14 @@ dbWriteTable(sql_conn,"wcpc",concatenated_cpc,append=TRUE, row.names=FALSE)
 
 # Clean up datetime
 dbSendQuery(sql_conn,"ALTER TABLE wcpc MODIFY datetime datetime;")
+}
 
 ```
-Maybe now we want to run this again to check for new files and append them...
+
+## Dealing with new files showing up in our directory
+Maybe now we want to run this again to check for new files and append them... this is easier if we delete original files once they are loaded into our SQL database, but let's say we want to triple ensure we have our data and want to maintain our file structure.
+
+This code block uses a stored text file `loaded_cpc_files.txt' as a tracker of what has been loaded to our SQL database. When a new file name is detected, it will append that file and update the loaded_cpc_file.txt document. We can then see that this change has occurred on Grafana.
 
 ```{r ex2-new files}
 
@@ -344,7 +354,7 @@ Maybe now we want to run this again to check for new files and append them...
 subdirectory_path <- "data/example 2/WCPC raw"  # Update with the actual path
 
 # Specify the path to the text file for storing file information
-info_file <- "file_info.txt"
+info_file <- "loaded_cpc_files.txt"
 
 # Function to read file information from the text file
 read_file_info <- function(filename) {
@@ -355,15 +365,11 @@ read_file_info <- function(filename) {
   }
 }
 
-# Create an empty data frame to store the concatenated data
-concatenated_cpc <- data.frame()
-
-
   # Read the list of files currently in the directory
   current_files <- list.files(path = subdirectory_path, pattern = "*.csv", full.names = TRUE)
   
   # Read the list of files previously stored in the text file
-  previous_files <- read_file_info("file_info.txt")
+  previous_files <- read_file_info(info_file)
   
   # Find the new files that are not in the list of previously stored files
   new_files <- setdiff(current_files, previous_files)
@@ -375,6 +381,9 @@ concatenated_cpc <- data.frame()
     })
     
     new_data <- bind_rows(new_data_list)
+    
+    # Create an empty data frame to store the concatenated data
+    concatenated_cpc <- data.frame()
     
     # Append the new data to the concatenated_data data frame
     concatenated_cpc <- bind_rows(concatenated_cpc, new_data)
@@ -388,13 +397,20 @@ concatenated_cpc <- data.frame()
       filter(datetime != "" & !is.na(datetime))
     
     # Append the new file names to the text file
-    writeLines(new_files, "file_info.txt", append = TRUE)
+    merged_files <- c(previous_files, new_files)
+    writeLines(merged_files, info_file, sep="\n")
+    
+    # Write our data to the SQL database
+    dbWriteTable(sql_conn,"wcpc",concatenated_cpc,append=TRUE, row.names=FALSE)
+
+    # Clean up datetime
+    dbSendQuery(sql_conn,"ALTER TABLE wcpc MODIFY datetime datetime;")
     
     # Optionally, you can print a message indicating new data has been added
     cat("New data added from:", new_files, "\n")
   }
 ```
 
-
+That's it! Thanks for following along in today's tutorial! If you have any questions, feel free to reach out via email at [nzimmerman@mech.ubc.ca](mailto:nzimmerman@mech.ubc.ca)
 
 
