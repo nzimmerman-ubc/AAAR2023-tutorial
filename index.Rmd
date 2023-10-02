@@ -272,8 +272,6 @@ ggplot(no2_july, aes(x=ymd_hms(date), y=concentration, color=Grouping)) +
 
 Some of the figures we just generated are fine, or might be useful for a publication, but say we are routinely collecting and downloading data and we want to track our data as it is coming in (maybe we are routinely collecting data and want a quick / dynamic way to visualize). We can leverage our same SQL databases into the open-source Grafana dashboarding tool. Let's check it out!
 
-![Having fun at the AAAAR tutorial](celebrate.png)
-
 ## Create a read-only user in MySQL to interface with Grafana
 
 There's no reason Grafana needs to be able to write new data, it's just visualizing what we already collected, so let's make a restricted version.
