@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>part2.knit</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">2023 Data Wrangling Tutorial</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Introduction</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+
+</div>
+
+
+<div id="part-2-building-our-sql-database-and-querying-it-example-1"
+class="section level1">
+<h1>Part 2: Building our SQL Database and Querying it; Example 1</h1>
+<p>In our first example, we have some pre-cleaned data from a deployment
+last year in Vancouver, BC. In this deployment, we had 11
+multi-pollutant low-cost sensors, and also collected data from 4
+regulatory monitoring stations to compare our focus neighborhood to the
+surrounding region. Let’s load the metadata from this example and show
+it as a table.</p>
+<pre class="r"><code>metadata &lt;- read_csv(&quot;data/example 1/metadata.csv&quot;, show_col_types = FALSE)
+knitr::kable(metadata)</code></pre>
+<table>
+<colgroup>
+<col width="38%" />
+<col width="26%" />
+<col width="8%" />
+<col width="12%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Type</th>
+<th align="left">Name</th>
+<th align="left">ID</th>
+<th align="right">latitude</th>
+<th align="right">longitude</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Low-cost sensor</td>
+<td align="left">RAMP 1001</td>
+<td align="left">R1001</td>
+<td align="right">49.2840</td>
+<td align="right">-123.0970</td>
+</tr>
+<tr class="even">
+<td align="left">Low-cost sensor</td>
+<td align="left">RAMP 1002</td>
+<td align="left">R1002</td>
+<td align="right">49.2810</td>
+<td align="right">-123.1010</td>
+</tr>
+<tr class="odd">
+<td align="left">Low-cost sensor</td>
+<td align="left">RAMP 1004</td>
+<td align="left">R1004</td>
+<td align="right">49.2790</td>
+<td align="right">-123.0850</td>
+</tr>
+<tr class="even">
+<td align="left">Low-cost sensor</td>
+<td align="left">RAMP 1005</td>
+<td align="left">R1005</td>
+<td align="right">49.2780</td>
+<td align="right">-123.0910</td>
+</tr>
+<tr class="odd">
+<td align="left">Low-cost sensor</td>
+<td align="left">RAMP 1008</td>
+<td align="left">R1008</td>
+<td align="right">49.2770</td>
+<td align="right">-123.0860</td>
+</tr>
+<tr class="even">
+<td align="left">Low-cost sensor</td>
+<td align="left">RAMP 1009</td>
+<td align="left">R1009</td>
+<td align="right">49.2810</td>
+<td align="right">-123.0740</td>
+</tr>
+<tr class="odd">
+<td align="left">Low-cost sensor</td>
+<td align="left">RAMP 1011</td>
+<td align="left">R1011</td>
+<td align="right">49.2790</td>
+<td align="right">-123.0920</td>
+</tr>
+<tr class="even">
+<td align="left">Low-cost sensor</td>
+<td align="left">RAMP 1012</td>
+<td align="left">R1012</td>
+<td align="right">49.2820</td>
+<td align="right">-123.0990</td>
+</tr>
+<tr class="odd">
+<td align="left">Low-cost sensor</td>
+<td align="left">RAMP 1039</td>
+<td align="left">R1039</td>
+<td align="right">49.2800</td>
+<td align="right">-123.0930</td>
+</tr>
+<tr class="even">
+<td align="left">Low-cost sensor</td>
+<td align="left">RAMP 1040</td>
+<td align="left">R1040</td>
+<td align="right">49.2800</td>
+<td align="right">-123.0820</td>
+</tr>
+<tr class="odd">
+<td align="left">Low-cost sensor</td>
+<td align="left">RAMP 1041</td>
+<td align="left">R1041</td>
+<td align="right">49.2820</td>
+<td align="right">-123.0880</td>
+</tr>
+<tr class="even">
+<td align="left">Regulatory Metro Vancouver</td>
+<td align="left">Burnaby South</td>
+<td align="left">BS</td>
+<td align="right">49.2152</td>
+<td align="right">-122.9857</td>
+</tr>
+<tr class="odd">
+<td align="left">Regulatory Metro Vancouver</td>
+<td align="left">Burnaby Kensington</td>
+<td align="left">BK</td>
+<td align="right">49.2792</td>
+<td align="right">-122.9707</td>
+</tr>
+<tr class="even">
+<td align="left">Regulatory Metro Vancouver</td>
+<td align="left">Richmond South</td>
+<td align="left">RS</td>
+<td align="right">49.1414</td>
+<td align="right">-123.1082</td>
+</tr>
+<tr class="odd">
+<td align="left">Regulatory Metro Vancouver</td>
+<td align="left">Mahon Park</td>
+<td align="left">MP</td>
+<td align="right">49.3240</td>
+<td align="right">-123.0835</td>
+</tr>
+</tbody>
+</table>
+<p>For each of these locations, I have provided about 4 months of daily
+average concentrations of NO<sub>2</sub>, PM<sub>2.5</sub>, and
+O<sub>3</sub>. I want to first create some SQL tables to store this
+data, load the data into those tables, and then use the SQL query format
+to start making some analyses and figures.</p>
+<div id="load-the-data-and-create-the-tables" class="section level2">
+<h2>Load the data and create the tables</h2>
+<p>Note I have put in a flag here of 0 or 1 if this is your first time
+executing the script. If you’re running it for the first time, set
+initial_run to “1”, otherwise set it to “0” to skip to the next steps.
+SQL will throw an error if you try and create a new table that already
+exists.</p>
+<p>We also need to set some permissions on the R and MySQL side of
+things to make sure we can write from these local files. For these
+permissions in R, this is embedded in the code. For the MySQL side, you
+will need to edit the “my.ini” configuration file using Notepad or other
+text editor and add the statement “local_infile=1” under the [client],
+[mysql], and [mysqld] sections of the file and save it. I’ll show you
+this now.</p>
+<pre class="r"><code>initial_run=0
+
+if(initial_run==1){
+## This should only be run once.
+
+# Load our data
+
+NO2_daily &lt;- read_csv(&quot;data/example 1/NO2_daily.csv&quot;, col_types = cols(date = col_date(format = &quot;%m/%d/%Y&quot;)), show_col_types = FALSE)
+O3_daily &lt;- read_csv(&quot;data/example 1/O3_daily.csv&quot;, col_types = cols(date = col_date(format = &quot;%m/%d/%Y&quot;)), show_col_types = FALSE)
+PM_daily &lt;- read_csv(&quot;data/example 1/PM_daily.csv&quot;, col_types = cols(date = col_date(format = &quot;%m/%d/%Y&quot;)), show_col_types = FALSE)
+
+# So that we can permit writing to SQL from R!
+dbSendQuery(sql_conn, &quot;SET GLOBAL local_infile = true;&quot;)
+
+# create tables in your SQL database
+dbCreateTable(sql_conn,name=&quot;no2_daily&quot;, fields=NO2_daily)
+dbCreateTable(sql_conn,name=&quot;o3_daily&quot;, fields=O3_daily)
+dbCreateTable(sql_conn,name=&quot;pm_daily&quot;, fields=PM_daily)
+
+# write our data to the SQL database
+dbWriteTable(sql_conn,&quot;no2_daily&quot;,NO2_daily,append=TRUE, row.names=FALSE)
+dbWriteTable(sql_conn,&quot;o3_daily&quot;,O3_daily,append=TRUE, row.names=FALSE)
+dbWriteTable(sql_conn,&quot;pm_daily&quot;,PM_daily,append=TRUE, row.names=FALSE)
+
+# RMySQL has some quirks where it really fights pushing the data in a correct datetime format, so we manually send a query to SQL to make sure it&#39;s formatted correctly!
+dbSendQuery(sql_conn,&quot;ALTER TABLE no2_daily MODIFY date datetime;&quot;)
+dbSendQuery(sql_conn,&quot;ALTER TABLE o3_daily MODIFY date datetime;&quot;)
+dbSendQuery(sql_conn,&quot;ALTER TABLE pm_daily MODIFY date datetime;&quot;)
+}</code></pre>
+</div>
+<div id="interacting-with-the-data" class="section level2">
+<h2>Interacting with the data</h2>
+<p>Imagine now that you are perhaps a secondary user of the data - maybe
+this is from a big field campaign and different people will be slicing
+and dicing the data in different ways. This is where having your data in
+an SQL database can be super helpful.</p>
+<p>You can have a select group of folks maintaining the SQL database (or
+even better log directly into an SQL server, but that’s a story for
+another day), and then create a new user who only has permission to
+SELECT data from the SQL database but not actually modify it.</p>
+<p>That keeps your original data safe and sound! Also it’s
+computationally more efficient to just pull in the data you need.</p>
+<p>So let’s look at how we can do this in R. To do this, we’re going to
+take advantage of the ‘dbplyr’ package, which lets you use typically
+‘tidyverse’ style commands to interact with databases. Once you’ve
+finished your tweaks, the `dbplyr’ package will just make 1 singular
+call to the database, and it also has the functionality to show you your
+query so you can learn the SQL equivalent at the same time.
+Win-win!!</p>
+<p>I will show you three different ways of playing with some of this
+data:</p>
+<ol style="list-style-type: decimal">
+<li><p>Pulling all the pollutant data into one data.table in R for a
+specified week at the Mahon Park site and calculating a pseudo-AQI (my
+time averaging is wrong for true AQI, but thi is a fictional example).
+There is a little package called con2aqi that converts concentrations to
+AQI that we will use here.</p></li>
+<li><p>Box plots across all our sites for each pollutant</p></li>
+<li><p>A time series of all our sites for NO2.</p></li>
+</ol>
+<p>These are just some simple examples, obviously everyone’s data
+questions are unique, this is just to provide some inspiration.</p>
+<pre class="r"><code># Data processing 1: Let&#39;s say we are interested in calculating the AQI for the week of May 15 - 21, 2022 at the Mahon Park site (MP)
+
+no2_db = tbl(sql_conn,&quot;no2_daily&quot;) %&gt;% select(date,MP) %&gt;% filter(between(date, as.Date(&#39;2022-05-15&#39;), as.Date(&#39;2022-05-21&#39;))) %&gt;% show_query() %&gt;% collect() %&gt;% rename(NO2_MP = MP)</code></pre>
+<pre><code>## &lt;SQL&gt;
+## SELECT `date`, `MP`
+## FROM `no2_daily`
+## WHERE (`date` BETWEEN CAST(&#39;2022-05-15&#39; AS DATE) AND CAST(&#39;2022-05-21&#39; AS DATE))</code></pre>
+<pre class="r"><code>o3_db = tbl(sql_conn,&quot;o3_daily&quot;) %&gt;% select(date,MP) %&gt;% filter(between(date, as.Date(&#39;2022-05-15&#39;), as.Date(&#39;2022-05-21&#39;))) %&gt;% show_query() %&gt;% collect() %&gt;% rename(O3_MP = MP)</code></pre>
+<pre><code>## &lt;SQL&gt;
+## SELECT `date`, `MP`
+## FROM `o3_daily`
+## WHERE (`date` BETWEEN CAST(&#39;2022-05-15&#39; AS DATE) AND CAST(&#39;2022-05-21&#39; AS DATE))</code></pre>
+<pre class="r"><code>pm_db = tbl(sql_conn,&quot;pm_daily&quot;) %&gt;% select(date,MP) %&gt;% filter(between(date, as.Date(&#39;2022-05-15&#39;), as.Date(&#39;2022-05-21&#39;))) %&gt;% show_query() %&gt;% collect() %&gt;% rename(PM_MP = MP)</code></pre>
+<pre><code>## &lt;SQL&gt;
+## SELECT `date`, `MP`
+## FROM `pm_daily`
+## WHERE (`date` BETWEEN CAST(&#39;2022-05-15&#39; AS DATE) AND CAST(&#39;2022-05-21&#39; AS DATE))</code></pre>
+<pre class="r"><code>#let&#39;s put it together into one dataframe for our local analysis
+aqi &lt;- left_join(no2_db, o3_db, by=&#39;date&#39;) %&gt;% left_join(., pm_db, by=&#39;date&#39;) %&gt;% rowwise() %&gt;%
+  mutate(aqi = max(con2aqi(&quot;pm25&quot;,PM_MP),con2aqi(&quot;o3&quot;,O3_MP/1000,&quot;8h&quot;),con2aqi(&quot;no2&quot;,NO2_MP)))
+
+knitr::kable(aqi)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">date</th>
+<th align="right">NO2_MP</th>
+<th align="right">O3_MP</th>
+<th align="right">PM_MP</th>
+<th align="right">aqi</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2022-05-15 00:00:00</td>
+<td align="right">17.36167</td>
+<td align="right">23.96840</td>
+<td align="right">3.784572</td>
+<td align="right">23</td>
+</tr>
+<tr class="even">
+<td align="left">2022-05-16 00:00:00</td>
+<td align="right">18.65333</td>
+<td align="right">39.14375</td>
+<td align="right">4.175584</td>
+<td align="right">37</td>
+</tr>
+<tr class="odd">
+<td align="left">2022-05-17 00:00:00</td>
+<td align="right">7.83000</td>
+<td align="right">35.28208</td>
+<td align="right">4.057679</td>
+<td align="right">33</td>
+</tr>
+<tr class="even">
+<td align="left">2022-05-18 00:00:00</td>
+<td align="right">8.46000</td>
+<td align="right">36.90521</td>
+<td align="right">2.723355</td>
+<td align="right">35</td>
+</tr>
+<tr class="odd">
+<td align="left">2022-05-19 00:00:00</td>
+<td align="right">16.86000</td>
+<td align="right">31.18792</td>
+<td align="right">2.832343</td>
+<td align="right">29</td>
+</tr>
+<tr class="even">
+<td align="left">2022-05-20 00:00:00</td>
+<td align="right">15.44333</td>
+<td align="right">27.66354</td>
+<td align="right">4.070064</td>
+<td align="right">26</td>
+</tr>
+<tr class="odd">
+<td align="left">2022-05-21 00:00:00</td>
+<td align="right">23.57333</td>
+<td align="right">27.47411</td>
+<td align="right">5.322663</td>
+<td align="right">26</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>##################
+
+# Data processing 2: Make box plots of the NO2, O3 and PM2.5 daily average concentrations across all the sites.
+
+no2_tidy = tbl(sql_conn,&quot;no2_daily&quot;) %&gt;% select(-date) %&gt;% collect() %&gt;% pivot_longer(everything(),names_to = &quot;site&quot;, values_to = &quot;concentration&quot;)
+
+# Create a custom order for the &#39;site&#39; variable
+site_order &lt;- c(&quot;BS&quot;, &quot;BK&quot;, &quot;MP&quot;,&quot;RS&quot;,&quot;R1001&quot;,&quot;R1002&quot;,&quot;R1004&quot;,&quot;R1005&quot;,&quot;R1008&quot;,&quot;R1009&quot;,&quot;R1011&quot;,&quot;R1012&quot;,&quot;R1039&quot;,&quot;R1040&quot;,&quot;R1041&quot;)
+
+# Generate the boxplot in ggplot2
+no2_plot &lt;- ggplot(no2_tidy, aes(x = factor(site, levels = site_order), y = concentration, fill=site)) +
+  geom_boxplot() +
+  labs(title = &quot;NO2 Concentrations by Site&quot;,
+       x = &quot;Site&quot;,
+       y = &quot;Concentration (ppb)&quot;) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position=&quot;none&quot;) +
+  scale_fill_discrete() +
+  coord_cartesian(ylim = c(0,60))
+no2_plot</code></pre>
+<p><img src="part2_files/figure-html/ex1-query-1.png" width="672" /></p>
+<pre class="r"><code># Repeat for O3
+o3_tidy = tbl(sql_conn,&quot;o3_daily&quot;) %&gt;% select(-date) %&gt;% collect() %&gt;% pivot_longer(everything(),names_to = &quot;site&quot;, values_to = &quot;concentration&quot;)
+
+o3_plot &lt;- ggplot(o3_tidy, aes(x = factor(site, levels = site_order), y = concentration, fill=site)) +
+  geom_boxplot() +
+  labs(title = &quot;O3 Concentrations by Site&quot;,
+       x = &quot;Site&quot;,
+       y = &quot;Concentration (ppb)&quot;) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position=&quot;none&quot;) +
+  scale_fill_discrete() +
+  coord_cartesian(ylim = c(0,60))
+o3_plot</code></pre>
+<p><img src="part2_files/figure-html/ex1-query-2.png" width="672" /></p>
+<pre class="r"><code># Repeat for PM2.5
+pm_tidy = tbl(sql_conn,&quot;pm_daily&quot;) %&gt;% select(-date) %&gt;% show_query() %&gt;% collect() %&gt;% pivot_longer(everything(),names_to = &quot;site&quot;, values_to = &quot;concentration&quot;)</code></pre>
+<pre><code>## &lt;SQL&gt;
+## SELECT
+##   `R1001`,
+##   `R1002`,
+##   `R1004`,
+##   `R1005`,
+##   `R1008`,
+##   `R1009`,
+##   `R1011`,
+##   `R1012`,
+##   `R1039`,
+##   `R1040`,
+##   `R1041`,
+##   `BS`,
+##   `BK`,
+##   `RS`,
+##   `MP`
+## FROM `pm_daily`</code></pre>
+<pre class="r"><code>pm_plot &lt;- ggplot(pm_tidy, aes(x = factor(site, levels = site_order), y = concentration, fill=site)) +
+  geom_boxplot() +
+  labs(title = &quot;PM2.5 Concentrations by Site&quot;,
+       x = &quot;Site&quot;,
+       y = &quot;Concentration (ug/m3)&quot;) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position=&quot;none&quot;) +
+  scale_fill_discrete() +
+  coord_cartesian(ylim = c(0,20))
+pm_plot</code></pre>
+<p><img src="part2_files/figure-html/ex1-query-3.png" width="672" /></p>
+<pre class="r"><code># Date Processing 3: Now let&#39;s make a time series for the month of July 2022 for NO2 at all of our sites.
+
+no2_july = tbl(sql_conn,&quot;no2_daily&quot;) %&gt;% filter(month(date)==7) %&gt;% show_query() %&gt;% collect() %&gt;% pivot_longer(cols=c(2:16),names_to = &quot;site&quot;, values_to = &quot;concentration&quot;)</code></pre>
+<pre><code>## &lt;SQL&gt;
+## SELECT *
+## FROM `no2_daily`
+## WHERE (EXTRACT(month FROM `date`) = 7.0)</code></pre>
+<pre class="r"><code>no2_july$Grouping &lt;- as.factor(no2_july$site)
+
+
+ggplot(no2_july, aes(x=ymd_hms(date), y=concentration, color=Grouping)) + 
+  geom_line(size=2, na.rm=TRUE) + 
+  labs(title = &quot;Time Series of Data for July&quot;,
+       x = &quot;Date&quot;,
+       y = &quot;NO2 Concentration (ppb)&quot;) +  
+  scale_color_manual(values = rainbow(15), breaks = site_order) +
+  theme_minimal()</code></pre>
+<p><img src="part2_files/figure-html/ex1-query-4.png" width="672" /></p>
+</div>
+</div>
+
+<div id="rmd-source-code">LS0tDQpvdXRwdXQ6DQogIHJtYXJrZG93bjo6aHRtbF9kb2N1bWVudDoNCiAgICB0aGVtZTogY2VydWxlYW4NCiAgICBjb2RlX2Rvd25sb2FkOiB0cnVlDQotLS0NCmBgYHtyIHNldHVwLXAyLCBpbmNsdWRlPUZBTFNFfQ0KDQojIENoZWNrIGZvciBwYWNtYW4gYW5kIGxvYWQNCmlmICghcmVxdWlyZSgicGFjbWFuIikpIGluc3RhbGwucGFja2FnZXMoInBhY21hbiIpOyBsaWJyYXJ5KHBhY21hbikNCg0KIyBJbnN0YWxsIC8gbG9hZCByZXF1aXJlZCBwYWNrYWdlcw0KcF9sb2FkKERCSSxST0RCQyxvZGJjLGRicGx5cixSTXlTUUwsdGlkeXZlcnNlLGtleXJpbmcsY29uMmFxaSxsdWJyaWRhdGUsIHN0cmluZ3IpDQoNCnNxbF9jb25uIDwtIGRiQ29ubmVjdChSTXlTUUw6Ok15U1FMKCksDQogICAgICAgICAgICAgICAgICBkYm5hbWUgPSAiYWFhcjIwMjN0dXRvcmlhbCIsDQogICAgICAgICAgICAgICAgICBTZXJ2ZXIgPSAibG9jYWxob3N0IiwNCiAgICAgICAgICAgICAgICAgIHBvcnQgPSAzMzA2LA0KICAgICAgICAgICAgICAgICAgdXNlciA9ICJyb290IiwNCiAgICAgICAgICAgICAgICAgIHBhc3N3b3JkID0ga2V5X2dldCgiTVlTUUxfUEFTU1dPUkQiKQ0KICAgICAgICAgICAgICAgICAgKQ0KYGBgDQojIFBhcnQgMjogQnVpbGRpbmcgb3VyIFNRTCBEYXRhYmFzZSBhbmQgUXVlcnlpbmcgaXQ7IEV4YW1wbGUgMQ0KDQpJbiBvdXIgZmlyc3QgZXhhbXBsZSwgd2UgaGF2ZSBzb21lIHByZS1jbGVhbmVkIGRhdGEgZnJvbSBhIGRlcGxveW1lbnQgbGFzdCB5ZWFyIGluIFZhbmNvdXZlciwgQkMuIEluIHRoaXMgZGVwbG95bWVudCwgd2UgaGFkIDExIG11bHRpLXBvbGx1dGFudCBsb3ctY29zdCBzZW5zb3JzLCBhbmQgYWxzbyBjb2xsZWN0ZWQgZGF0YSBmcm9tIDQgcmVndWxhdG9yeSBtb25pdG9yaW5nIHN0YXRpb25zIHRvIGNvbXBhcmUgb3VyIGZvY3VzIG5laWdoYm9yaG9vZCB0byB0aGUgc3Vycm91bmRpbmcgcmVnaW9uLiBMZXQncyBsb2FkIHRoZSBtZXRhZGF0YSBmcm9tIHRoaXMgZXhhbXBsZSBhbmQgc2hvdyBpdCBhcyBhIHRhYmxlLg0KDQpgYGB7ciBleDEtaW50cm8sIGluY2x1ZGU9VFJVRX0NCm1ldGFkYXRhIDwtIHJlYWRfY3N2KCJkYXRhL2V4YW1wbGUgMS9tZXRhZGF0YS5jc3YiLCBzaG93X2NvbF90eXBlcyA9IEZBTFNFKQ0Ka25pdHI6OmthYmxlKG1ldGFkYXRhKQ0KYGBgDQpGb3IgZWFjaCBvZiB0aGVzZSBsb2NhdGlvbnMsIEkgaGF2ZSBwcm92aWRlZCBhYm91dCA0IG1vbnRocyBvZiBkYWlseSBhdmVyYWdlIGNvbmNlbnRyYXRpb25zIG9mIE5PfjJ+LCBQTX4yLjV+LCBhbmQgT34zfi4gSSB3YW50IHRvIGZpcnN0IGNyZWF0ZSBzb21lIFNRTCB0YWJsZXMgdG8gc3RvcmUgdGhpcyBkYXRhLCBsb2FkIHRoZSBkYXRhIGludG8gdGhvc2UgdGFibGVzLCBhbmQgdGhlbiB1c2UgdGhlIFNRTCBxdWVyeSBmb3JtYXQgdG8gc3RhcnQgbWFraW5nIHNvbWUgYW5hbHlzZXMgYW5kIGZpZ3VyZXMuDQoNCiMjIExvYWQgdGhlIGRhdGEgYW5kIGNyZWF0ZSB0aGUgdGFibGVzDQoNCk5vdGUgSSBoYXZlIHB1dCBpbiBhIGZsYWcgaGVyZSBvZiAwIG9yIDEgaWYgdGhpcyBpcyB5b3VyIGZpcnN0IHRpbWUgZXhlY3V0aW5nIHRoZSBzY3JpcHQuIElmIHlvdSdyZSBydW5uaW5nIGl0IGZvciB0aGUgZmlyc3QgdGltZSwgc2V0IGluaXRpYWxfcnVuIHRvICIxIiwgb3RoZXJ3aXNlIHNldCBpdCB0byAiMCIgdG8gc2tpcCB0byB0aGUgbmV4dCBzdGVwcy4gU1FMIHdpbGwgdGhyb3cgYW4gZXJyb3IgaWYgeW91IHRyeSBhbmQgY3JlYXRlIGEgbmV3IHRhYmxlIHRoYXQgYWxyZWFkeSBleGlzdHMuDQoNCldlIGFsc28gbmVlZCB0byBzZXQgc29tZSBwZXJtaXNzaW9ucyBvbiB0aGUgUiBhbmQgTXlTUUwgc2lkZSBvZiB0aGluZ3MgdG8gbWFrZSBzdXJlIHdlIGNhbiB3cml0ZSBmcm9tIHRoZXNlIGxvY2FsIGZpbGVzLiBGb3IgdGhlc2UgcGVybWlzc2lvbnMgaW4gUiwgdGhpcyBpcyBlbWJlZGRlZCBpbiB0aGUgY29kZS4gRm9yIHRoZSBNeVNRTCBzaWRlLCB5b3Ugd2lsbCBuZWVkIHRvIGVkaXQgdGhlICJteS5pbmkiIGNvbmZpZ3VyYXRpb24gZmlsZSB1c2luZyBOb3RlcGFkIG9yIG90aGVyIHRleHQgZWRpdG9yIGFuZCBhZGQgdGhlIHN0YXRlbWVudCAibG9jYWxfaW5maWxlPTEiIHVuZGVyIHRoZSBbY2xpZW50XSwgW215c3FsXSwgYW5kIFtteXNxbGRdIHNlY3Rpb25zIG9mIHRoZSBmaWxlIGFuZCBzYXZlIGl0LiBJJ2xsIHNob3cgeW91IHRoaXMgbm93Lg0KDQpgYGB7ciBTUUwtY3JlYXRldGFibGVzLCBpbmNsdWRlPVRSVUV9DQppbml0aWFsX3J1bj0wDQoNCmlmKGluaXRpYWxfcnVuPT0xKXsNCiMjIFRoaXMgc2hvdWxkIG9ubHkgYmUgcnVuIG9uY2UuDQoNCiMgTG9hZCBvdXIgZGF0YQ0KDQpOTzJfZGFpbHkgPC0gcmVhZF9jc3YoImRhdGEvZXhhbXBsZSAxL05PMl9kYWlseS5jc3YiLCBjb2xfdHlwZXMgPSBjb2xzKGRhdGUgPSBjb2xfZGF0ZShmb3JtYXQgPSAiJW0vJWQvJVkiKSksIHNob3dfY29sX3R5cGVzID0gRkFMU0UpDQpPM19kYWlseSA8LSByZWFkX2NzdigiZGF0YS9leGFtcGxlIDEvTzNfZGFpbHkuY3N2IiwgY29sX3R5cGVzID0gY29scyhkYXRlID0gY29sX2RhdGUoZm9ybWF0ID0gIiVtLyVkLyVZIikpLCBzaG93X2NvbF90eXBlcyA9IEZBTFNFKQ0KUE1fZGFpbHkgPC0gcmVhZF9jc3YoImRhdGEvZXhhbXBsZSAxL1BNX2RhaWx5LmNzdiIsIGNvbF90eXBlcyA9IGNvbHMoZGF0ZSA9IGNvbF9kYXRlKGZvcm1hdCA9ICIlbS8lZC8lWSIpKSwgc2hvd19jb2xfdHlwZXMgPSBGQUxTRSkNCg0KIyBTbyB0aGF0IHdlIGNhbiBwZXJtaXQgd3JpdGluZyB0byBTUUwgZnJvbSBSIQ0KZGJTZW5kUXVlcnkoc3FsX2Nvbm4sICJTRVQgR0xPQkFMIGxvY2FsX2luZmlsZSA9IHRydWU7IikNCg0KIyBjcmVhdGUgdGFibGVzIGluIHlvdXIgU1FMIGRhdGFiYXNlDQpkYkNyZWF0ZVRhYmxlKHNxbF9jb25uLG5hbWU9Im5vMl9kYWlseSIsIGZpZWxkcz1OTzJfZGFpbHkpDQpkYkNyZWF0ZVRhYmxlKHNxbF9jb25uLG5hbWU9Im8zX2RhaWx5IiwgZmllbGRzPU8zX2RhaWx5KQ0KZGJDcmVhdGVUYWJsZShzcWxfY29ubixuYW1lPSJwbV9kYWlseSIsIGZpZWxkcz1QTV9kYWlseSkNCg0KIyB3cml0ZSBvdXIgZGF0YSB0byB0aGUgU1FMIGRhdGFiYXNlDQpkYldyaXRlVGFibGUoc3FsX2Nvbm4sIm5vMl9kYWlseSIsTk8yX2RhaWx5LGFwcGVuZD1UUlVFLCByb3cubmFtZXM9RkFMU0UpDQpkYldyaXRlVGFibGUoc3FsX2Nvbm4sIm8zX2RhaWx5IixPM19kYWlseSxhcHBlbmQ9VFJVRSwgcm93Lm5hbWVzPUZBTFNFKQ0KZGJXcml0ZVRhYmxlKHNxbF9jb25uLCJwbV9kYWlseSIsUE1fZGFpbHksYXBwZW5kPVRSVUUsIHJvdy5uYW1lcz1GQUxTRSkNCg0KIyBSTXlTUUwgaGFzIHNvbWUgcXVpcmtzIHdoZXJlIGl0IHJlYWxseSBmaWdodHMgcHVzaGluZyB0aGUgZGF0YSBpbiBhIGNvcnJlY3QgZGF0ZXRpbWUgZm9ybWF0LCBzbyB3ZSBtYW51YWxseSBzZW5kIGEgcXVlcnkgdG8gU1FMIHRvIG1ha2Ugc3VyZSBpdCdzIGZvcm1hdHRlZCBjb3JyZWN0bHkhDQpkYlNlbmRRdWVyeShzcWxfY29ubiwiQUxURVIgVEFCTEUgbm8yX2RhaWx5IE1PRElGWSBkYXRlIGRhdGV0aW1lOyIpDQpkYlNlbmRRdWVyeShzcWxfY29ubiwiQUxURVIgVEFCTEUgbzNfZGFpbHkgTU9ESUZZIGRhdGUgZGF0ZXRpbWU7IikNCmRiU2VuZFF1ZXJ5KHNxbF9jb25uLCJBTFRFUiBUQUJMRSBwbV9kYWlseSBNT0RJRlkgZGF0ZSBkYXRldGltZTsiKQ0KfQ0KYGBgDQoNCiMjIEludGVyYWN0aW5nIHdpdGggdGhlIGRhdGENCg0KSW1hZ2luZSBub3cgdGhhdCB5b3UgYXJlIHBlcmhhcHMgYSBzZWNvbmRhcnkgdXNlciBvZiB0aGUgZGF0YSAtIG1heWJlIHRoaXMgaXMgZnJvbSBhIGJpZyBmaWVsZCBjYW1wYWlnbiBhbmQgZGlmZmVyZW50IHBlb3BsZSB3aWxsIGJlIHNsaWNpbmcgYW5kIGRpY2luZyB0aGUgZGF0YSBpbiBkaWZmZXJlbnQgd2F5cy4gVGhpcyBpcyB3aGVyZSBoYXZpbmcgeW91ciBkYXRhIGluIGFuIFNRTCBkYXRhYmFzZSBjYW4gYmUgc3VwZXIgaGVscGZ1bC4gDQoNCllvdSBjYW4gaGF2ZSBhIHNlbGVjdCBncm91cCBvZiBmb2xrcyBtYWludGFpbmluZyB0aGUgU1FMIGRhdGFiYXNlIChvciBldmVuIGJldHRlciBsb2cgZGlyZWN0bHkgaW50byBhbiBTUUwgc2VydmVyLCBidXQgdGhhdCdzIGEgc3RvcnkgZm9yIGFub3RoZXIgZGF5KSwgYW5kIHRoZW4gY3JlYXRlIGEgbmV3IHVzZXIgd2hvIG9ubHkgaGFzIHBlcm1pc3Npb24gdG8gU0VMRUNUIGRhdGEgZnJvbSB0aGUgU1FMIGRhdGFiYXNlIGJ1dCBub3QgYWN0dWFsbHkgbW9kaWZ5IGl0LiANCg0KVGhhdCBrZWVwcyB5b3VyIG9yaWdpbmFsIGRhdGEgc2FmZSBhbmQgc291bmQhIEFsc28gaXQncyBjb21wdXRhdGlvbmFsbHkgbW9yZSBlZmZpY2llbnQgdG8ganVzdCBwdWxsIGluIHRoZSBkYXRhIHlvdSBuZWVkLg0KDQpTbyBsZXQncyBsb29rIGF0IGhvdyB3ZSBjYW4gZG8gdGhpcyBpbiBSLiBUbyBkbyB0aGlzLCB3ZSdyZSBnb2luZyB0byB0YWtlIGFkdmFudGFnZSBvZiB0aGUgJ2RicGx5cicgcGFja2FnZSwgd2hpY2ggbGV0cyB5b3UgdXNlIHR5cGljYWxseSAndGlkeXZlcnNlJyBzdHlsZSBjb21tYW5kcyB0byBpbnRlcmFjdCB3aXRoIGRhdGFiYXNlcy4gT25jZSB5b3UndmUgZmluaXNoZWQgeW91ciB0d2Vha3MsIHRoZSBgZGJwbHlyJyBwYWNrYWdlIHdpbGwganVzdCBtYWtlIDEgc2luZ3VsYXIgY2FsbCB0byB0aGUgZGF0YWJhc2UsIGFuZCBpdCBhbHNvIGhhcyB0aGUgZnVuY3Rpb25hbGl0eSB0byBzaG93IHlvdSB5b3VyIHF1ZXJ5IHNvIHlvdSBjYW4gbGVhcm4gdGhlIFNRTCBlcXVpdmFsZW50IGF0IHRoZSBzYW1lIHRpbWUuIFdpbi13aW4hIQ0KDQpJIHdpbGwgc2hvdyB5b3UgdGhyZWUgZGlmZmVyZW50IHdheXMgb2YgcGxheWluZyB3aXRoIHNvbWUgb2YgdGhpcyBkYXRhOg0KDQoxLiBQdWxsaW5nIGFsbCB0aGUgcG9sbHV0YW50IGRhdGEgaW50byBvbmUgZGF0YS50YWJsZSBpbiBSIGZvciBhIHNwZWNpZmllZCB3ZWVrIGF0IHRoZSBNYWhvbiBQYXJrIHNpdGUgYW5kIGNhbGN1bGF0aW5nIGEgcHNldWRvLUFRSSAobXkgdGltZSBhdmVyYWdpbmcgaXMgd3JvbmcgZm9yIHRydWUgQVFJLCBidXQgdGhpIGlzIGEgZmljdGlvbmFsIGV4YW1wbGUpLiBUaGVyZSBpcyBhIGxpdHRsZSBwYWNrYWdlIGNhbGxlZCBjb24yYXFpIHRoYXQgY29udmVydHMgY29uY2VudHJhdGlvbnMgdG8gQVFJIHRoYXQgd2Ugd2lsbCB1c2UgaGVyZS4NCg0KMi4gQm94IHBsb3RzIGFjcm9zcyBhbGwgb3VyIHNpdGVzIGZvciBlYWNoIHBvbGx1dGFudA0KDQozLiBBIHRpbWUgc2VyaWVzIG9mIGFsbCBvdXIgc2l0ZXMgZm9yIE5PMi4NCg0KVGhlc2UgYXJlIGp1c3Qgc29tZSBzaW1wbGUgZXhhbXBsZXMsIG9idmlvdXNseSBldmVyeW9uZSdzIGRhdGEgcXVlc3Rpb25zIGFyZSB1bmlxdWUsIHRoaXMgaXMganVzdCB0byBwcm92aWRlIHNvbWUgaW5zcGlyYXRpb24uDQoNCmBgYHtyIGV4MS1xdWVyeSwgaW5jbHVkZT1UUlVFLCB3YXJuaW5nPUZBTFNFfQ0KDQojIERhdGEgcHJvY2Vzc2luZyAxOiBMZXQncyBzYXkgd2UgYXJlIGludGVyZXN0ZWQgaW4gY2FsY3VsYXRpbmcgdGhlIEFRSSBmb3IgdGhlIHdlZWsgb2YgTWF5IDE1IC0gMjEsIDIwMjIgYXQgdGhlIE1haG9uIFBhcmsgc2l0ZSAoTVApDQoNCm5vMl9kYiA9IHRibChzcWxfY29ubiwibm8yX2RhaWx5IikgJT4lIHNlbGVjdChkYXRlLE1QKSAlPiUgZmlsdGVyKGJldHdlZW4oZGF0ZSwgYXMuRGF0ZSgnMjAyMi0wNS0xNScpLCBhcy5EYXRlKCcyMDIyLTA1LTIxJykpKSAlPiUgc2hvd19xdWVyeSgpICU+JSBjb2xsZWN0KCkgJT4lIHJlbmFtZShOTzJfTVAgPSBNUCkNCm8zX2RiID0gdGJsKHNxbF9jb25uLCJvM19kYWlseSIpICU+JSBzZWxlY3QoZGF0ZSxNUCkgJT4lIGZpbHRlcihiZXR3ZWVuKGRhdGUsIGFzLkRhdGUoJzIwMjItMDUtMTUnKSwgYXMuRGF0ZSgnMjAyMi0wNS0yMScpKSkgJT4lIHNob3dfcXVlcnkoKSAlPiUgY29sbGVjdCgpICU+JSByZW5hbWUoTzNfTVAgPSBNUCkNCnBtX2RiID0gdGJsKHNxbF9jb25uLCJwbV9kYWlseSIpICU+JSBzZWxlY3QoZGF0ZSxNUCkgJT4lIGZpbHRlcihiZXR3ZWVuKGRhdGUsIGFzLkRhdGUoJzIwMjItMDUtMTUnKSwgYXMuRGF0ZSgnMjAyMi0wNS0yMScpKSkgJT4lIHNob3dfcXVlcnkoKSAlPiUgY29sbGVjdCgpICU+JSByZW5hbWUoUE1fTVAgPSBNUCkNCg0KI2xldCdzIHB1dCBpdCB0b2dldGhlciBpbnRvIG9uZSBkYXRhZnJhbWUgZm9yIG91ciBsb2NhbCBhbmFseXNpcw0KYXFpIDwtIGxlZnRfam9pbihubzJfZGIsIG8zX2RiLCBieT0nZGF0ZScpICU+JSBsZWZ0X2pvaW4oLiwgcG1fZGIsIGJ5PSdkYXRlJykgJT4lIHJvd3dpc2UoKSAlPiUNCiAgbXV0YXRlKGFxaSA9IG1heChjb24yYXFpKCJwbTI1IixQTV9NUCksY29uMmFxaSgibzMiLE8zX01QLzEwMDAsIjhoIiksY29uMmFxaSgibm8yIixOTzJfTVApKSkNCg0Ka25pdHI6OmthYmxlKGFxaSkNCg0KIyMjIyMjIyMjIyMjIyMjIyMjDQoNCiMgRGF0YSBwcm9jZXNzaW5nIDI6IE1ha2UgYm94IHBsb3RzIG9mIHRoZSBOTzIsIE8zIGFuZCBQTTIuNSBkYWlseSBhdmVyYWdlIGNvbmNlbnRyYXRpb25zIGFjcm9zcyBhbGwgdGhlIHNpdGVzLg0KDQpubzJfdGlkeSA9IHRibChzcWxfY29ubiwibm8yX2RhaWx5IikgJT4lIHNlbGVjdCgtZGF0ZSkgJT4lIGNvbGxlY3QoKSAlPiUgcGl2b3RfbG9uZ2VyKGV2ZXJ5dGhpbmcoKSxuYW1lc190byA9ICJzaXRlIiwgdmFsdWVzX3RvID0gImNvbmNlbnRyYXRpb24iKQ0KDQojIENyZWF0ZSBhIGN1c3RvbSBvcmRlciBmb3IgdGhlICdzaXRlJyB2YXJpYWJsZQ0Kc2l0ZV9vcmRlciA8LSBjKCJCUyIsICJCSyIsICJNUCIsIlJTIiwiUjEwMDEiLCJSMTAwMiIsIlIxMDA0IiwiUjEwMDUiLCJSMTAwOCIsIlIxMDA5IiwiUjEwMTEiLCJSMTAxMiIsIlIxMDM5IiwiUjEwNDAiLCJSMTA0MSIpDQoNCiMgR2VuZXJhdGUgdGhlIGJveHBsb3QgaW4gZ2dwbG90Mg0Kbm8yX3Bsb3QgPC0gZ2dwbG90KG5vMl90aWR5LCBhZXMoeCA9IGZhY3RvcihzaXRlLCBsZXZlbHMgPSBzaXRlX29yZGVyKSwgeSA9IGNvbmNlbnRyYXRpb24sIGZpbGw9c2l0ZSkpICsNCiAgZ2VvbV9ib3hwbG90KCkgKw0KICBsYWJzKHRpdGxlID0gIk5PMiBDb25jZW50cmF0aW9ucyBieSBTaXRlIiwNCiAgICAgICB4ID0gIlNpdGUiLA0KICAgICAgIHkgPSAiQ29uY2VudHJhdGlvbiAocHBiKSIpICsNCiAgdGhlbWUoYXhpcy50ZXh0LnggPSBlbGVtZW50X3RleHQoYW5nbGUgPSA5MCwgaGp1c3QgPSAxKSwgbGVnZW5kLnBvc2l0aW9uPSJub25lIikgKw0KICBzY2FsZV9maWxsX2Rpc2NyZXRlKCkgKw0KICBjb29yZF9jYXJ0ZXNpYW4oeWxpbSA9IGMoMCw2MCkpDQpubzJfcGxvdA0KDQoNCiMgUmVwZWF0IGZvciBPMw0KbzNfdGlkeSA9IHRibChzcWxfY29ubiwibzNfZGFpbHkiKSAlPiUgc2VsZWN0KC1kYXRlKSAlPiUgY29sbGVjdCgpICU+JSBwaXZvdF9sb25nZXIoZXZlcnl0aGluZygpLG5hbWVzX3RvID0gInNpdGUiLCB2YWx1ZXNfdG8gPSAiY29uY2VudHJhdGlvbiIpDQoNCm8zX3Bsb3QgPC0gZ2dwbG90KG8zX3RpZHksIGFlcyh4ID0gZmFjdG9yKHNpdGUsIGxldmVscyA9IHNpdGVfb3JkZXIpLCB5ID0gY29uY2VudHJhdGlvbiwgZmlsbD1zaXRlKSkgKw0KICBnZW9tX2JveHBsb3QoKSArDQogIGxhYnModGl0bGUgPSAiTzMgQ29uY2VudHJhdGlvbnMgYnkgU2l0ZSIsDQogICAgICAgeCA9ICJTaXRlIiwNCiAgICAgICB5ID0gIkNvbmNlbnRyYXRpb24gKHBwYikiKSArDQogIHRoZW1lKGF4aXMudGV4dC54ID0gZWxlbWVudF90ZXh0KGFuZ2xlID0gOTAsIGhqdXN0ID0gMSksIGxlZ2VuZC5wb3NpdGlvbj0ibm9uZSIpICsNCiAgc2NhbGVfZmlsbF9kaXNjcmV0ZSgpICsNCiAgY29vcmRfY2FydGVzaWFuKHlsaW0gPSBjKDAsNjApKQ0KbzNfcGxvdA0KDQojIFJlcGVhdCBmb3IgUE0yLjUNCnBtX3RpZHkgPSB0Ymwoc3FsX2Nvbm4sInBtX2RhaWx5IikgJT4lIHNlbGVjdCgtZGF0ZSkgJT4lIHNob3dfcXVlcnkoKSAlPiUgY29sbGVjdCgpICU+JSBwaXZvdF9sb25nZXIoZXZlcnl0aGluZygpLG5hbWVzX3RvID0gInNpdGUiLCB2YWx1ZXNfdG8gPSAiY29uY2VudHJhdGlvbiIpDQoNCnBtX3Bsb3QgPC0gZ2dwbG90KHBtX3RpZHksIGFlcyh4ID0gZmFjdG9yKHNpdGUsIGxldmVscyA9IHNpdGVfb3JkZXIpLCB5ID0gY29uY2VudHJhdGlvbiwgZmlsbD1zaXRlKSkgKw0KICBnZW9tX2JveHBsb3QoKSArDQogIGxhYnModGl0bGUgPSAiUE0yLjUgQ29uY2VudHJhdGlvbnMgYnkgU2l0ZSIsDQogICAgICAgeCA9ICJTaXRlIiwNCiAgICAgICB5ID0gIkNvbmNlbnRyYXRpb24gKHVnL20zKSIpICsNCiAgdGhlbWUoYXhpcy50ZXh0LnggPSBlbGVtZW50X3RleHQoYW5nbGUgPSA5MCwgaGp1c3QgPSAxKSwgbGVnZW5kLnBvc2l0aW9uPSJub25lIikgKw0KICBzY2FsZV9maWxsX2Rpc2NyZXRlKCkgKw0KICBjb29yZF9jYXJ0ZXNpYW4oeWxpbSA9IGMoMCwyMCkpDQpwbV9wbG90DQoNCiMgRGF0ZSBQcm9jZXNzaW5nIDM6IE5vdyBsZXQncyBtYWtlIGEgdGltZSBzZXJpZXMgZm9yIHRoZSBtb250aCBvZiBKdWx5IDIwMjIgZm9yIE5PMiBhdCBhbGwgb2Ygb3VyIHNpdGVzLg0KDQpubzJfanVseSA9IHRibChzcWxfY29ubiwibm8yX2RhaWx5IikgJT4lIGZpbHRlcihtb250aChkYXRlKT09NykgJT4lIHNob3dfcXVlcnkoKSAlPiUgY29sbGVjdCgpICU+JSBwaXZvdF9sb25nZXIoY29scz1jKDI6MTYpLG5hbWVzX3RvID0gInNpdGUiLCB2YWx1ZXNfdG8gPSAiY29uY2VudHJhdGlvbiIpDQoNCm5vMl9qdWx5JEdyb3VwaW5nIDwtIGFzLmZhY3RvcihubzJfanVseSRzaXRlKQ0KDQoNCmdncGxvdChubzJfanVseSwgYWVzKHg9eW1kX2htcyhkYXRlKSwgeT1jb25jZW50cmF0aW9uLCBjb2xvcj1Hcm91cGluZykpICsgDQogIGdlb21fbGluZShzaXplPTIsIG5hLnJtPVRSVUUpICsgDQogIGxhYnModGl0bGUgPSAiVGltZSBTZXJpZXMgb2YgRGF0YSBmb3IgSnVseSIsDQogICAgICAgeCA9ICJEYXRlIiwNCiAgICAgICB5ID0gIk5PMiBDb25jZW50cmF0aW9uIChwcGIpIikgKyAgDQogIHNjYWxlX2NvbG9yX21hbnVhbCh2YWx1ZXMgPSByYWluYm93KDE1KSwgYnJlYWtzID0gc2l0ZV9vcmRlcikgKw0KICB0aGVtZV9taW5pbWFsKCkNCmBgYA0K</div>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("part2.Rmd");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -58,35 +58,58 @@ I will now quickly demonstrate making a change, committing that change, and push
 If you want to follow along in real-time with this tutorial, navigate to this tutorial's repository [(Click here to access)](https://github.com/nzimmerman-ubc/AAAR2023-tutorial) and create a fork (which will create a local copy in your own repository). 
 
 # Part 1: SQL Set-up and Logistics
-So first things first, we're going to make sure we have set up and configured MySQL on our machine. We'll do this part live, so follow along. We can interact with MySQL in a few ways:
+Before we can start playing with data, we're going to make sure we have set up and configured MySQL on our machine. We'll do this part live, so follow along. We can interact with MySQL in a few ways:
 
 * MySQL Workbench: A Graphical User Interface for your SQL data
 * The command line
 
 The nice thing about the workbench is that it can help you learn how to write and parse SQL queries, since it will translate your request into the query. So we'll mostly be using the Workbench to check that our work is being stored correctly, but I will show some quick examples in the command line too later on in the tutorial. 
 
-Once we have set up MySQL on our machine, we need to make sure 
-The first thing we need to do, is add our experiment data to MySQL so we can query the data in R. While these steps occur outside of RStudio, I have included some screenshots here so you can follow along. There are a few options to add data to MySQL. Here I will describe two of them:
+Once we have set up MySQL on our machine, making note of the MySQL user (and their credentials to write new tables etc.), we can start working in R to import our data, write it to SQL, and be off to the races. 
+
+_A note on how I'm using SQL here:_ One of the core features of an SQL database is that you can link different scheme (think tables) together with keys. Keys can be used to create a relationship among different database tables or views. This isn't a tutorial on SQL, so we're keeping it simple today. But if SQL is something you want to learn, this is a pretty fundamental concept to keep in mind.
+
+## Diving into R
+
+What you're looking at right now is an HTML version of an RMarkdown file that I prepared for this tutorial. A markdown document allows me to combine text, code blocks, and outputs of those codes in one place. If you download the 'Rmd' file from the website, you can see what the Markdown document looks like in its raw form. When you're done editing, you can see the formatted html version by "Knitting".
+
+### (_An Aside_) Jupyter Notebooks
+
+A very popular alternative to R Markdown documents is Jupyter Notebooks. If Python is your thing, you'll probably prefer them. You can also add in R to Jupyter notebooks and even toggle between R code blocks and Python code blocks in one place. Let's take a quick peek at the Jupyter notebooks ecosystem so you can make a mental note to learn more another day.
 
 
+### R Set-up: Libraries and Packages
+In this first code block, we're going to (1) check for the necessary packages to execute the codes in this Markdown document, (2) install those packages if you haven't already installed them, and (3) load the packages if installed.
 
-## Housekeeping
-We are going to do a few things to get started!
-
-- Install the necessary packages
-- Load the necessary packages
+I like the 'pacman' package to streamline this process, since you can just give it a list of packages within the 'p_load' command that will elegantly install any missing packages and then load them.
 
 ```{r setup, include=TRUE}
-knitr::opts_chunk$set(echo = TRUE)
 
-# Load packages - I like to use the pacman package to do this more elegantly.
+# Check for pacman and load
 if (!require("pacman")) install.packages("pacman"); library(pacman)
 
-# The pacman package has a nice function 'p_load()' that will load the listed packages and install them if they are not already installed.
+# Install / load required packages
 p_load(DBI,RODBC,odbc,dbplyr,RMySQL,tidyverse,keyring,con2aqi,lubridate, stringr)
+```
 
-# Check that MySQL is listed, if it isn't need to provide steps.
+### R Set-up: SQL Connection
+
+The packages we have loaded (specifically: DBI, RODBC, ODBC and dbplyr) will let us connect to and manipulate an SQL database. Let's first check to make sure we have the appropriate drivers installed to run these packages successfully, and then connect to our SQL database.
+
+(note, if you don't have an empty database to work with, we can create one in either the MySQL workbench or in the command line)
+
+> mysql -u root -p
+
+> CREATE DATABASE livedemo;
+
+You'll notice in the code block below that I haven't actually shown you my MySQL password - this is good coding practice. It's not a good idea to be widely sharing passwords, API keys etc. The best approach here is to store your password as an environment variable. I like the 'keyring' package to do this for me. I have previously stored my password and so I can just use the key_get function to load it. Hooray!
+
+```{r SQL-connect, include=TRUE}
+
+# First check that the MySQL driver is listed here before proceeding.
 sort(unique(odbcListDrivers()[[1]]))
+
+# Now connect to our SQL database using the 'dbConnect' function:
 
 sql_conn <- dbConnect(RMySQL::MySQL(),
                   dbname = "aaar2023tutorial",
@@ -95,21 +118,40 @@ sql_conn <- dbConnect(RMySQL::MySQL(),
                   user = "root",
                   password = key_get("MYSQL_PASSWORD")
                   )
+```
+
+# Part 2: Building our SQL Database and Querying it; Example 1
+
+In our first example, we have some pre-cleaned data from a deployment last year in Vancouver, BC. In this deployment, we had 11 multi-pollutant low-cost sensors, and also collected data from 4 regulatory monitoring stations to compare our focus neighborhood to the surrounding region. Let's load the metadata from this example and show it as a table.
+
+```{r ex1-intro, include=TRUE}
+metadata <- read_csv("data/example 1/metadata.csv", show_col_types = FALSE)
+knitr::kable(metadata)
+```
+For each of these locations, I have provided about 4 months of daily average concentrations of NO~2~, PM~2.5~, and O~3~. I want to first create some SQL tables to store this data, load the data into those tables, and then use the SQL query format to start making some analyses and figures.
+
+## Load the data and create the tables
+
+Note I have put in a flag here of 0 or 1 if this is your first time executing the script. If you're running it for the first time, set initial_run to "1", otherwise set it to "0" to skip to the next steps. SQL will throw an error if you try and create a new table that already exists.
+
+We also need to set some permissions on the R and MySQL side of things to make sure we can write from these local files. For these permissions in R, this is embedded in the code. For the MySQL side, you will need to edit the "my.ini" configuration file using Notepad or other text editor and add the statement "local_infile=1" under the [client], [mysql], and [mysqld] sections of the file and save it. I'll show you this now.
+
+```{r SQL-createtables, include=TRUE}
 initial_run=0
 
 if(initial_run==1){
-  ## FIRST TIME ONLY!
-# load some data
-metadata <- read_csv("data/example 1/metadata.csv")
-NO2_daily <- read_csv("data/example 1/NO2_daily.csv", col_types = cols(date = col_character())) %>% mutate(date=mdy(date), date=format(date,"%Y-%m-%d"))
+## This should only be run once.
 
-O3_daily <- read_csv("data/example 1/O3_daily.csv", col_types = cols(date = col_date(format = "%m/%d/%Y")))
-PM_daily <- read_csv("data/example 1/PM_daily.csv", col_types = cols(date = col_date(format = "%m/%d/%Y")))
+# Load our data
+
+NO2_daily <- read_csv("data/example 1/NO2_daily.csv", col_types = cols(date = col_date(format = "%m/%d/%Y")), show_col_types = FALSE)
+O3_daily <- read_csv("data/example 1/O3_daily.csv", col_types = cols(date = col_date(format = "%m/%d/%Y")), show_col_types = FALSE)
+PM_daily <- read_csv("data/example 1/PM_daily.csv", col_types = cols(date = col_date(format = "%m/%d/%Y")), show_col_types = FALSE)
 
 # So that we can permit writing to SQL from R!
 dbSendQuery(sql_conn, "SET GLOBAL local_infile = true;")
 
-# create a table in your SQL database
+# create tables in your SQL database
 dbCreateTable(sql_conn,name="no2_daily", fields=NO2_daily)
 dbCreateTable(sql_conn,name="o3_daily", fields=O3_daily)
 dbCreateTable(sql_conn,name="pm_daily", fields=PM_daily)
@@ -119,15 +161,37 @@ dbWriteTable(sql_conn,"no2_daily",NO2_daily,append=TRUE, row.names=FALSE)
 dbWriteTable(sql_conn,"o3_daily",O3_daily,append=TRUE, row.names=FALSE)
 dbWriteTable(sql_conn,"pm_daily",PM_daily,append=TRUE, row.names=FALSE)
 
+# RMySQL has some quirks where it really fights pushing the data in a correct datetime format, so we manually send a query to SQL to make sure it's formatted correctly!
 dbSendQuery(sql_conn,"ALTER TABLE no2_daily MODIFY date datetime;")
 dbSendQuery(sql_conn,"ALTER TABLE o3_daily MODIFY date datetime;")
 dbSendQuery(sql_conn,"ALTER TABLE pm_daily MODIFY date datetime;")
 }
+```
 
+## Interacting with the data
 
+Imagine now that you are perhaps a secondary user of the data - maybe this is from a big field campaign and different people will be slicing and dicing the data in different ways. This is where having your data in an SQL database can be super helpful. 
 
+You can have a select group of folks maintaining the SQL database (or even better log directly into an SQL server, but that's a story for another day), and then create a new user who only has permission to SELECT data from the SQL database but not actually modify it. 
 
-# let's query our SQL in R! Let's say we are interested in calculating the AQI for the week of May 15 - 21, 2022 at the Mahon Park site (MP)
+That keeps your original data safe and sound! Also it's computationally more efficient to just pull in the data you need.
+
+So let's look at how we can do this in R. To do this, we're going to take advantage of the 'dbplyr' package, which lets you use typically 'tidyverse' style commands to interact with databases. Once you've finished your tweaks, the `dbplyr' package will just make 1 singular call to the database, and it also has the functionality to show you your query so you can learn the SQL equivalent at the same time. Win-win!!
+
+I will show you three different ways of playing with some of this data:
+
+1. Pulling all the pollutant data into one data.table in R for a specified week at the Mahon Park site and calculating a pseudo-AQI (my time averaging is wrong for true AQI, but thi is a fictional example). There is a little package called con2aqi that converts concentrations to AQI that we will use here.
+
+2. Box plots across all our sites for each pollutant
+
+3. A time series of all our sites for NO2.
+
+These are just some simple examples, obviously everyone's data questions are unique, this is just to provide some inspiration.
+
+```{r ex1-query, include=TRUE, warning=FALSE}
+
+# Data processing 1: Let's say we are interested in calculating the AQI for the week of May 15 - 21, 2022 at the Mahon Park site (MP)
+
 no2_db = tbl(sql_conn,"no2_daily") %>% select(date,MP) %>% filter(between(date, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(NO2_MP = MP)
 o3_db = tbl(sql_conn,"o3_daily") %>% select(date,MP) %>% filter(between(date, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(O3_MP = MP)
 pm_db = tbl(sql_conn,"pm_daily") %>% select(date,MP) %>% filter(between(date, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(PM_MP = MP)
@@ -136,13 +200,18 @@ pm_db = tbl(sql_conn,"pm_daily") %>% select(date,MP) %>% filter(between(date, as
 aqi <- left_join(no2_db, o3_db, by='date') %>% left_join(., pm_db, by='date') %>% rowwise() %>%
   mutate(aqi = max(con2aqi("pm25",PM_MP),con2aqi("o3",O3_MP/1000,"8h"),con2aqi("no2",NO2_MP)))
 
-# maybe now we want to make a box plot of the no2 concentrations across sites!
-no2_tidy = tbl(sql_conn,"no2_daily") %>% select(-date) %>% show_query() %>% collect() %>% pivot_longer(everything(),names_to = "site", values_to = "concentration")
+knitr::kable(aqi)
+
+##################
+
+# Data processing 2: Make box plots of the NO2, O3 and PM2.5 daily average concentrations across all the sites.
+
+no2_tidy = tbl(sql_conn,"no2_daily") %>% select(-date) %>% collect() %>% pivot_longer(everything(),names_to = "site", values_to = "concentration")
 
 # Create a custom order for the 'site' variable
 site_order <- c("BS", "BK", "MP","RS","R1001","R1002","R1004","R1005","R1008","R1009","R1011","R1012","R1039","R1040","R1041")
 
-# Make box plots for everything
+# Generate the boxplot in ggplot2
 no2_plot <- ggplot(no2_tidy, aes(x = factor(site, levels = site_order), y = concentration, fill=site)) +
   geom_boxplot() +
   labs(title = "NO2 Concentrations by Site",
@@ -153,7 +222,9 @@ no2_plot <- ggplot(no2_tidy, aes(x = factor(site, levels = site_order), y = conc
   coord_cartesian(ylim = c(0,60))
 no2_plot
 
-o3_tidy = tbl(sql_conn,"o3_daily") %>% select(-date) %>% show_query() %>% collect() %>% pivot_longer(everything(),names_to = "site", values_to = "concentration")
+
+# Repeat for O3
+o3_tidy = tbl(sql_conn,"o3_daily") %>% select(-date) %>% collect() %>% pivot_longer(everything(),names_to = "site", values_to = "concentration")
 
 o3_plot <- ggplot(o3_tidy, aes(x = factor(site, levels = site_order), y = concentration, fill=site)) +
   geom_boxplot() +
@@ -165,6 +236,7 @@ o3_plot <- ggplot(o3_tidy, aes(x = factor(site, levels = site_order), y = concen
   coord_cartesian(ylim = c(0,60))
 o3_plot
 
+# Repeat for PM2.5
 pm_tidy = tbl(sql_conn,"pm_daily") %>% select(-date) %>% show_query() %>% collect() %>% pivot_longer(everything(),names_to = "site", values_to = "concentration")
 
 pm_plot <- ggplot(pm_tidy, aes(x = factor(site, levels = site_order), y = concentration, fill=site)) +
@@ -177,28 +249,42 @@ pm_plot <- ggplot(pm_tidy, aes(x = factor(site, levels = site_order), y = concen
   coord_cartesian(ylim = c(0,20))
 pm_plot
 
-# Now let's make a time series for the month of July 2022 for all pollutants
-no2_july = tbl(sql_conn,"no2_daily") %>% filter(month(date)==7) %>%show_query() %>% collect() %>% pivot_longer(cols=c(2:16),names_to = "site", values_to = "concentration")
+# Date Processing 3: Now let's make a time series for the month of July 2022 for NO2 at all of our sites.
 
-ggplot(no2_july, aes(x = date, y = concentration, color = site)) +
-  geom_line(na.rm=TRUE) +
+no2_july = tbl(sql_conn,"no2_daily") %>% filter(month(date)==7) %>% show_query() %>% collect() %>% pivot_longer(cols=c(2:16),names_to = "site", values_to = "concentration")
+
+no2_july$Grouping <- as.factor(no2_july$site)
+
+
+ggplot(no2_july, aes(x=ymd_hms(date), y=concentration, color=Grouping)) + 
+  geom_line(size=2, na.rm=TRUE) + 
   labs(title = "Time Series of Data for July",
        x = "Date",
-       y = "NO2 Concentration (ppb)")
-
-# Read data into Grafana
-
-# Make a user that can only read our SQL database called "grafana-demo"
-
-# CREATE USER 'grafana-demo'@'localhost' IDENTIFIED BY 'aaartutorial'
-
-# SELECT User from mysql.user to view our users
-
-# GRANT SELECT ON database_name.table_name TO 'username'@'localhost';
-
-# FLUSH PRIVILEGES;
-
-
+       y = "NO2 Concentration (ppb)") +  
+  scale_color_manual(values = rainbow(15), breaks = site_order) +
+  theme_minimal()
 ```
+
+# Part 3: Dashboards and plotting in Grafana
+
+Some of the figures we just generated are fine, or might be useful for a publication, but say we are routinely collecting and downloading data and we want to track our data as it is coming in (maybe we are routinely collecting data and want a quick / dynamic way to visualize). We can leverage our same SQL databases into the open-source Grafana dashboarding tool. Let's check it out!
+
+## Create a read-only user in MySQL to interface with Grafana
+
+There's no reason Grafana needs to be able to write new data, it's just visualizing what we already collected, so let's make a restricted version.
+
+> CREATE USER 'grafana-demo'@'localhost' IDENTIFIED BY 'aaartutorial';
+
+> SELECT User from mysql.user;
+
+> GRANT SELECT ON database_name.table_name TO 'username'@'localhost';
+
+> FLUSH PRIVILEGES;
+
+Now let's hop on over to Grafana and see what we can do. In general this will consist of:
+
+* Connecting to our MySQL data source (just a one time thing)
+* Creating new panels for our dashboard either using SQL Query or with their interactive code builder.
+
 
 

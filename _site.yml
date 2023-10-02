@@ -2,5 +2,12 @@ output_dir: "."
 navbar:
     title: "2023 Data Wrangling Tutorial"
     right:
-      - text: "Home"
+      - text: "Introduction"
         href: index.html
+      - text: "Part 1"
+        href: part1.html
+      - text: "Part 2"
+        href: part2.html
+      - text: "Part 3"
+        href: part3.html
+

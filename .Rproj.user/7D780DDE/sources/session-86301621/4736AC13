@@ -1,28 +1,27 @@
 {
-    "id": "39657677",
-    "path": "C:/Users/zimmer43/Sync/Github/AAAR2023-tutorial/index.Rmd",
-    "project_path": "index.Rmd",
+    "id": "4736AC13",
+    "path": "C:/Users/zimmer43/Sync/Github/AAAR2023-tutorial/part2.Rmd",
+    "project_path": "part2.Rmd",
     "type": "r_markdown",
     "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1696232689723.0,
+    "created": 1696238962846.0,
     "source_on_save": false,
-    "relative_order": 1,
+    "relative_order": 4,
     "properties": {
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "276,0",
-        "scrollLine": "274",
-        "last_setup_crc32": "863016217253cc"
+        "cursorPosition": "0,0",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1696238863,
+    "lastKnownWriteTime": 1696239003,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1696238863694,
+    "last_content_update": 1696239003816,
     "read_only": false,
     "read_only_alternatives": []
 }

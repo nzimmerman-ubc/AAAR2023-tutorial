@@ -1,0 +1,2 @@
+"0","metadata <- read_csv(""data/example 1/metadata.csv"", show_col_types = FALSE)"
+"0","knitr::kable(metadata)"
