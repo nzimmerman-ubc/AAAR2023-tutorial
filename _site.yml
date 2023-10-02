@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 output_dir: "."
 navbar:
     title: "2023 Data Wrangling Tutorial"
     right:
       - text: "Home"
         href: index.html
+=======
+output_dir: "."
+navbar:
+    title: "2023 Data Wrangling Tutorial"
+    right:
+      - text: "Home"
+        href: index.html
+>>>>>>> 331b139fc788c13e743ad1f369492807a6434ab0
         

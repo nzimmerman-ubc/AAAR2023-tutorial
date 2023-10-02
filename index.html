@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 
 <html>
@@ -691,3 +692,674 @@ $(document).ready(function () {
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Dr. Naomi Zimmerman" />
+
+<meta name="date" content="2023-10-02" />
+
+<title>AAAR 2023 Data Wrangling Tutorial</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">2023 Data Wrangling Tutorial</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">AAAR 2023 Data Wrangling Tutorial</h1>
+<h4 class="author">Dr. Naomi Zimmerman</h4>
+<h4 class="date">2023-10-02</h4>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Managing your experimental data is increasingly difficult because of
+the sheer volume of data that is being collected, the high time
+resolution of the data, the number of data users, and publishing
+requirements on making data and codes open and accessible. Taking some
+time to learn from core data management and data wrangling skills is
+important!</p>
+<p>In this tutorial, we’ll look at the data management and analysis
+pipeline from data import / upload through to data visualization. We’ll
+compare a couple of different approaches considering the needs I just
+outlined. The first data set I am providing is a pre-cleaned data set
+for simplicity and to show the pipeline from start to finish. If we have
+time, we’ll look at a more complicated set of data that requires more
+pre-processing before we can look at it.</p>
+<p>There are many coding languages you can use to work with your data.
+In this tutorial, I am going to use Structured Query Language (SQL) and
+R. To manage SQL data, I will show an example with <a
+href="https://www.mysql.com/products/community/">MySQL</a>. This is just
+one database management system, and many of the same principles will
+apply if you’re using other popular SQL database management systems like
+<a href="https://www.sqlite.org/download.html">SQLite</a> or <a
+href="https://www.postgresql.org/download/">PostgreSQL</a>. You just
+need to change the R package you are using to interface with the SQL
+database management system you are using.</p>
+<p>I’ll also briefly demonstrate importing your data directly into <a
+href="https://cran.r-project.org/">R</a> and some common pitfalls / why
+the SQL approach can be preferable.</p>
+<p>Once our data is in <a href="https://cran.r-project.org/">R</a> using
+<a href="https://posit.co/download/rstudio-desktop/">RStudio</a>, a
+popular integrated development environment (IDE) for R, we’ll do some
+quick visualizations, introducing you to a popular collection of R
+coding packages called the <a
+href="https://www.tidyverse.org/">‘tidyverse’</a>. This shares many
+principles with the <a href="https://pandas.pydata.org/">‘pandas’</a>
+software library in <a
+href="https://www.python.org/downloads/">Python</a>. So while we will
+work in R/RStudio today, again, many of the ideas or processes can be
+replicated in Python (for example using the <a
+href="https://www.jetbrains.com/pycharm/download/">PyCharm IDE</a>).
+It’s just a matter of personal preference :)</p>
+<p>To manage our R codes and take notes / share interim plots, we’ll be
+using a markdown file. I’m typing this tutorial right now in an R
+Markdown file. Very meta. Another popular piece of software for markdown
+files with embedded R or Python coding is <a
+href="https://jupyter.org/">Jupyter Notebooks</a>. We won’t run any
+Jupyter notebooks, but I will show you briefly what they’re all
+about.</p>
+<p>As we work through our data, we all know that analysis can take time.
+Or perhaps we want to run a code that might break everything (happens to
+the best of us!) and we want to make sure we can restore our previous
+code. Version control is your friend here and it’s so easy to do with <a
+href="https://git-scm.com/downloads">Git</a>, which is a distributed
+version control system that tracks changes in any set of computer files.
+We’ll use the <a href="https://github.com/join">Github</a> platform as
+our convenient cloud-based system to execute our Git version control. A
+nice feature of Github is that we can also easily convert our Markdown
+files into webpages (which is what you’re reading right now!). So cool,
+right?</p>
+<p>Lastly, if you have a lot of data being collected routinely, it can
+be cool to show your data. We’ll do a simple example in <a
+href="https://grafana.com/grafana/download">Grafana</a>, which is an
+open source analytics and interactive visualization web application.</p>
+<p>What we’ll cover today is a lot for a 1 hour 45 minute session - and
+that’s okay! The goal is that you come out of this tutorial with some
+ideas, new terminology and an interest in learning more. If you take the
+time to learn these principles and approaches early on in your program,
+you’ll have an easier time down the road when you’re trying to address
+Reviewer 2 comments almost a year after a paper was originally
+developed, because you left yourself an awesome paper trail. Future you
+is already thanking you! Now without further ado, let’s get started.</p>
+<div id="getting-yourself-set-up" class="section level2">
+<h2>Getting yourself set-up</h2>
+<p>If you want to follow along in real-time, you’ll need the following
+tools installed on your machine. Note that I tested this tutorial in the
+Windows operating system. I can’t make any guarantees it will work 100%
+smoothly in a macOS or Linux operating system, but there shouldn’t be
+too many pitfalls with this.</p>
+<p>Tools needed:</p>
+<ul>
+<li>MySQL <a href="https://www.youtube.com/watch?v=qBBXBZXKi0w">(Click
+here for YouTube tutorial for installing MySQL on Windows 11)</a></li>
+<li>R and RStudio <a
+href="https://www.youtube.com/watch?v=YrEe2TLr3MI">(Click here for
+YouTube tutorial for installing R and RStudio)</a></li>
+<li>Git and a Github account <a
+href="https://github.com/git-guides/install-git">(Click here for a
+Github Guide on Installing Git)</a></li>
+<li>Connect Git to RStudio <a
+href="https://www.youtube.com/watch?v=bUoN85QvC10">(Click here for a
+YouTube tutorial on connecting Git and Github to an RStudio
+Project)</a></li>
+</ul>
+<p>Other notes:</p>
+<ul>
+<li>This tutorial will require a bunch of R packages to be installed -
+but don’t worry, I have parts of the code blocks below that will install
+any R packages you might need that you don’t already have :)</li>
+<li>All the data, codes and markdown files are available in the Github
+repository <a
+href="https://github.com/nzimmerman-ubc/AAAR2023-tutorial">(Click here
+to access)</a></li>
+<li>If you just want the R Markdown file, you can download it from the
+upper right corner of the page.</li>
+</ul>
+</div>
+</div>
+<div id="part-1-sql-set-up-and-logistics" class="section level1">
+<h1>Part 1: SQL Set-up and Logistics</h1>
+<p>So first things first, we’re going to make sure we have set up and
+configured MySQL on our machine. We’ll do this part live, so follow
+along. We can interact with MySQL in a few ways:</p>
+<ul>
+<li>MySQL Workbench: A Graphical User Interface for your SQL data</li>
+<li>The command line</li>
+</ul>
+<p>The nice thing about the workbench is that it can help you learn how
+to write and parse SQL queries, since it will translate your request
+into the query. So we’ll mostly be using the Workbench to check that our
+work is being stored correctly, but I will show some quick examples in
+the command line too later on in the tutorial.</p>
+<p>Once we have set up MySQL on our machine, we need to make sure The
+first thing we need to do, is add our experiment data to MySQL so we can
+query the data in R. While these steps occur outside of RStudio, I have
+included some screenshots here so you can follow along. There are a few
+options to add data to MySQL. Here I will describe two of them:</p>
+<div id="housekeeping" class="section level2">
+<h2>Housekeeping</h2>
+<p>We are going to do a few things to get started!</p>
+<ul>
+<li>Install the necessary packages</li>
+<li>Load the necessary packages</li>
+</ul>
+<pre class="r"><code>knitr::opts_chunk$set(echo = TRUE)
+
+# Load packages - I like to use the pacman package to do this more elegantly.
+if (!require(&quot;pacman&quot;)) install.packages(&quot;pacman&quot;); library(pacman)</code></pre>
+<pre><code>## Loading required package: pacman</code></pre>
+<pre class="r"><code># The pacman package has a nice function &#39;p_load()&#39; that will load the listed packages and install them if they are not already installed.
+p_load(DBI,RODBC,odbc,dbplyr,RMySQL,tidyverse,keyring,con2aqi,lubridate, stringr)
+
+# Check that MySQL is listed, if it isn&#39;t need to provide steps.
+sort(unique(odbcListDrivers()[[1]]))</code></pre>
+<pre><code>## [1] &quot;Microsoft Access Driver (*.mdb, *.accdb)&quot;              
+## [2] &quot;Microsoft Access Text Driver (*.txt, *.csv)&quot;           
+## [3] &quot;Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)&quot;
+## [4] &quot;MySQL ODBC 8.1 ANSI Driver&quot;                            
+## [5] &quot;MySQL ODBC 8.1 Unicode Driver&quot;                         
+## [6] &quot;SQL Server&quot;</code></pre>
+<pre class="r"><code>sql_conn &lt;- dbConnect(RMySQL::MySQL(),
+                  dbname = &quot;aaar2023tutorial&quot;,
+                  Server = &quot;localhost&quot;,
+                  port = 3306,
+                  user = &quot;root&quot;,
+                  password = key_get(&quot;MYSQL_PASSWORD&quot;)
+                  )
+initial_run=0
+
+if(initial_run==1){
+  ## FIRST TIME ONLY!
+# load some data
+metadata &lt;- read_csv(&quot;data/example 1/metadata.csv&quot;)
+NO2_daily &lt;- read_csv(&quot;data/example 1/NO2_daily.csv&quot;, col_types = cols(date = col_character())) %&gt;% mutate(date=mdy(date), date=format(date,&quot;%Y-%m-%d&quot;))
+
+O3_daily &lt;- read_csv(&quot;data/example 1/O3_daily.csv&quot;, col_types = cols(date = col_date(format = &quot;%m/%d/%Y&quot;)))
+PM_daily &lt;- read_csv(&quot;data/example 1/PM_daily.csv&quot;, col_types = cols(date = col_date(format = &quot;%m/%d/%Y&quot;)))
+
+# So that we can permit writing to SQL from R!
+dbSendQuery(sql_conn, &quot;SET GLOBAL local_infile = true;&quot;)
+
+# create a table in your SQL database
+dbCreateTable(sql_conn,name=&quot;no2_daily&quot;, fields=NO2_daily)
+dbCreateTable(sql_conn,name=&quot;o3_daily&quot;, fields=O3_daily)
+dbCreateTable(sql_conn,name=&quot;pm_daily&quot;, fields=PM_daily)
+
+# write our data to the SQL database
+dbWriteTable(sql_conn,&quot;no2_daily&quot;,NO2_daily,append=TRUE, row.names=FALSE)
+dbWriteTable(sql_conn,&quot;o3_daily&quot;,O3_daily,append=TRUE, row.names=FALSE)
+dbWriteTable(sql_conn,&quot;pm_daily&quot;,PM_daily,append=TRUE, row.names=FALSE)
+
+dbSendQuery(sql_conn,&quot;ALTER TABLE no2_daily MODIFY date datetime;&quot;)
+dbSendQuery(sql_conn,&quot;ALTER TABLE o3_daily MODIFY date datetime;&quot;)
+dbSendQuery(sql_conn,&quot;ALTER TABLE pm_daily MODIFY date datetime;&quot;)
+}
+
+
+
+
+# let&#39;s query our SQL in R! Let&#39;s say we are interested in calculating the AQI for the week of May 15 - 21, 2022 at the Mahon Park site (MP)
+no2_db = tbl(sql_conn,&quot;no2_daily&quot;) %&gt;% select(date,MP) %&gt;% filter(between(date, as.Date(&#39;2022-05-15&#39;), as.Date(&#39;2022-05-21&#39;))) %&gt;% show_query() %&gt;% collect() %&gt;% rename(NO2_MP = MP)</code></pre>
+<pre><code>## &lt;SQL&gt;
+## SELECT `date`, `MP`
+## FROM `no2_daily`
+## WHERE (`date` BETWEEN CAST(&#39;2022-05-15&#39; AS DATE) AND CAST(&#39;2022-05-21&#39; AS DATE))</code></pre>
+<pre class="r"><code>o3_db = tbl(sql_conn,&quot;o3_daily&quot;) %&gt;% select(date,MP) %&gt;% filter(between(date, as.Date(&#39;2022-05-15&#39;), as.Date(&#39;2022-05-21&#39;))) %&gt;% show_query() %&gt;% collect() %&gt;% rename(O3_MP = MP)</code></pre>
+<pre><code>## &lt;SQL&gt;
+## SELECT `date`, `MP`
+## FROM `o3_daily`
+## WHERE (`date` BETWEEN CAST(&#39;2022-05-15&#39; AS DATE) AND CAST(&#39;2022-05-21&#39; AS DATE))</code></pre>
+<pre class="r"><code>pm_db = tbl(sql_conn,&quot;pm_daily&quot;) %&gt;% select(date,MP) %&gt;% filter(between(date, as.Date(&#39;2022-05-15&#39;), as.Date(&#39;2022-05-21&#39;))) %&gt;% show_query() %&gt;% collect() %&gt;% rename(PM_MP = MP)</code></pre>
+<pre><code>## &lt;SQL&gt;
+## SELECT `date`, `MP`
+## FROM `pm_daily`
+## WHERE (`date` BETWEEN CAST(&#39;2022-05-15&#39; AS DATE) AND CAST(&#39;2022-05-21&#39; AS DATE))</code></pre>
+<pre class="r"><code>#let&#39;s put it together into one dataframe for our local analysis
+aqi &lt;- left_join(no2_db, o3_db, by=&#39;date&#39;) %&gt;% left_join(., pm_db, by=&#39;date&#39;) %&gt;% rowwise() %&gt;%
+  mutate(aqi = max(con2aqi(&quot;pm25&quot;,PM_MP),con2aqi(&quot;o3&quot;,O3_MP/1000,&quot;8h&quot;),con2aqi(&quot;no2&quot;,NO2_MP)))
+
+# maybe now we want to make a box plot of the no2 concentrations across sites!
+no2_tidy = tbl(sql_conn,&quot;no2_daily&quot;) %&gt;% select(-date) %&gt;% show_query() %&gt;% collect() %&gt;% pivot_longer(everything(),names_to = &quot;site&quot;, values_to = &quot;concentration&quot;)</code></pre>
+<pre><code>## &lt;SQL&gt;
+## SELECT
+##   `R1001`,
+##   `R1002`,
+##   `R1004`,
+##   `R1005`,
+##   `R1008`,
+##   `R1009`,
+##   `R1011`,
+##   `R1012`,
+##   `R1039`,
+##   `R1040`,
+##   `R1041`,
+##   `BS`,
+##   `BK`,
+##   `RS`,
+##   `MP`
+## FROM `no2_daily`</code></pre>
+<pre class="r"><code># Create a custom order for the &#39;site&#39; variable
+site_order &lt;- c(&quot;BS&quot;, &quot;BK&quot;, &quot;MP&quot;,&quot;RS&quot;,&quot;R1001&quot;,&quot;R1002&quot;,&quot;R1004&quot;,&quot;R1005&quot;,&quot;R1008&quot;,&quot;R1009&quot;,&quot;R1011&quot;,&quot;R1012&quot;,&quot;R1039&quot;,&quot;R1040&quot;,&quot;R1041&quot;)
+
+# Make box plots for everything
+no2_plot &lt;- ggplot(no2_tidy, aes(x = factor(site, levels = site_order), y = concentration, fill=site)) +
+  geom_boxplot() +
+  labs(title = &quot;NO2 Concentrations by Site&quot;,
+       x = &quot;Site&quot;,
+       y = &quot;Concentration (ppb)&quot;) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position=&quot;none&quot;) +
+  scale_fill_discrete() +
+  coord_cartesian(ylim = c(0,60))
+no2_plot</code></pre>
+<pre><code>## Warning: Removed 162 rows containing non-finite values (`stat_boxplot()`).</code></pre>
+<p><img src="index_files/figure-html/setup-1.png" width="672" /></p>
+<pre class="r"><code>o3_tidy = tbl(sql_conn,&quot;o3_daily&quot;) %&gt;% select(-date) %&gt;% show_query() %&gt;% collect() %&gt;% pivot_longer(everything(),names_to = &quot;site&quot;, values_to = &quot;concentration&quot;)</code></pre>
+<pre><code>## &lt;SQL&gt;
+## SELECT
+##   `R1001`,
+##   `R1002`,
+##   `R1004`,
+##   `R1005`,
+##   `R1008`,
+##   `R1009`,
+##   `R1011`,
+##   `R1012`,
+##   `R1039`,
+##   `R1040`,
+##   `R1041`,
+##   `BS`,
+##   `BK`,
+##   `RS`,
+##   `MP`
+## FROM `o3_daily`</code></pre>
+<pre class="r"><code>o3_plot &lt;- ggplot(o3_tidy, aes(x = factor(site, levels = site_order), y = concentration, fill=site)) +
+  geom_boxplot() +
+  labs(title = &quot;O3 Concentrations by Site&quot;,
+       x = &quot;Site&quot;,
+       y = &quot;Concentration (ppb)&quot;) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position=&quot;none&quot;) +
+  scale_fill_discrete() +
+  coord_cartesian(ylim = c(0,60))
+o3_plot</code></pre>
+<pre><code>## Warning: Removed 162 rows containing non-finite values (`stat_boxplot()`).</code></pre>
+<p><img src="index_files/figure-html/setup-2.png" width="672" /></p>
+<pre class="r"><code>pm_tidy = tbl(sql_conn,&quot;pm_daily&quot;) %&gt;% select(-date) %&gt;% show_query() %&gt;% collect() %&gt;% pivot_longer(everything(),names_to = &quot;site&quot;, values_to = &quot;concentration&quot;)</code></pre>
+<pre><code>## &lt;SQL&gt;
+## SELECT
+##   `R1001`,
+##   `R1002`,
+##   `R1004`,
+##   `R1005`,
+##   `R1008`,
+##   `R1009`,
+##   `R1011`,
+##   `R1012`,
+##   `R1039`,
+##   `R1040`,
+##   `R1041`,
+##   `BS`,
+##   `BK`,
+##   `RS`,
+##   `MP`
+## FROM `pm_daily`</code></pre>
+<pre class="r"><code>pm_plot &lt;- ggplot(pm_tidy, aes(x = factor(site, levels = site_order), y = concentration, fill=site)) +
+  geom_boxplot() +
+  labs(title = &quot;PM2.5 Concentrations by Site&quot;,
+       x = &quot;Site&quot;,
+       y = &quot;Concentration (ug/m3)&quot;) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position=&quot;none&quot;) +
+  scale_fill_discrete() +
+  coord_cartesian(ylim = c(0,20))
+pm_plot</code></pre>
+<pre><code>## Warning: Removed 268 rows containing non-finite values (`stat_boxplot()`).</code></pre>
+<p><img src="index_files/figure-html/setup-3.png" width="672" /></p>
+<pre class="r"><code># Now let&#39;s make a time series for the month of July 2022 for all pollutants
+no2_july = tbl(sql_conn,&quot;no2_daily&quot;) %&gt;% filter(month(date)==7) %&gt;%show_query() %&gt;% collect() %&gt;% pivot_longer(cols=c(2:16),names_to = &quot;site&quot;, values_to = &quot;concentration&quot;)</code></pre>
+<pre><code>## &lt;SQL&gt;
+## SELECT *
+## FROM `no2_daily`
+## WHERE (EXTRACT(month FROM `date`) = 7.0)</code></pre>
+<pre class="r"><code>ggplot(no2_july, aes(x = date, y = concentration, color = site)) +
+  geom_line(na.rm=TRUE) +
+  labs(title = &quot;Time Series of Data for July&quot;,
+       x = &quot;Date&quot;,
+       y = &quot;NO2 Concentration (ppb)&quot;)</code></pre>
+<pre><code>## `geom_line()`: Each group consists of only one observation.
+## ℹ Do you need to adjust the group aesthetic?</code></pre>
+<p><img src="index_files/figure-html/setup-4.png" width="672" /></p>
+<pre class="r"><code># Read data into Grafana
+
+# Make a user that can only read our SQL database called &quot;grafana-demo&quot;
+
+# CREATE USER &#39;grafana-demo&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;aaartutorial&#39;
+
+# SELECT User from mysql.user to view our users
+
+# GRANT SELECT ON database_name.table_name TO &#39;username&#39;@&#39;localhost&#39;;
+
+# FLUSH PRIVILEGES;</code></pre>
+</div>
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkFBQVIgMjAyMyBEYXRhIFdyYW5nbGluZyBUdXRvcmlhbCINCmF1dGhvcjogIkRyLiBOYW9taSBaaW1tZXJtYW4iDQpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiDQpvdXRwdXQ6DQogIHJtYXJrZG93bjo6aHRtbF9kb2N1bWVudDoNCiAgICB0aGVtZTogY2VydWxlYW4NCiAgICBjb2RlX2Rvd25sb2FkOiB0cnVlDQotLS0NCiMgSW50cm9kdWN0aW9uDQoNCk1hbmFnaW5nIHlvdXIgZXhwZXJpbWVudGFsIGRhdGEgaXMgaW5jcmVhc2luZ2x5IGRpZmZpY3VsdCBiZWNhdXNlIG9mIHRoZSBzaGVlciB2b2x1bWUgb2YgZGF0YSB0aGF0IGlzIGJlaW5nIGNvbGxlY3RlZCwgdGhlIGhpZ2ggdGltZSByZXNvbHV0aW9uIG9mIHRoZSBkYXRhLCB0aGUgbnVtYmVyIG9mIGRhdGEgdXNlcnMsIGFuZCBwdWJsaXNoaW5nIHJlcXVpcmVtZW50cyBvbiBtYWtpbmcgZGF0YSBhbmQgY29kZXMgb3BlbiBhbmQgYWNjZXNzaWJsZS4gVGFraW5nIHNvbWUgdGltZSB0byBsZWFybiBmcm9tIGNvcmUgZGF0YSBtYW5hZ2VtZW50IGFuZCBkYXRhIHdyYW5nbGluZyBza2lsbHMgaXMgaW1wb3J0YW50IQ0KDQpJbiB0aGlzIHR1dG9yaWFsLCB3ZSdsbCBsb29rIGF0IHRoZSBkYXRhIG1hbmFnZW1lbnQgYW5kIGFuYWx5c2lzIHBpcGVsaW5lIGZyb20gZGF0YSBpbXBvcnQgLyB1cGxvYWQgdGhyb3VnaCB0byBkYXRhIHZpc3VhbGl6YXRpb24uIFdlJ2xsIGNvbXBhcmUgYSBjb3VwbGUgb2YgZGlmZmVyZW50IGFwcHJvYWNoZXMgY29uc2lkZXJpbmcgdGhlIG5lZWRzIEkganVzdCBvdXRsaW5lZC4gVGhlIGZpcnN0IGRhdGEgc2V0IEkgYW0gcHJvdmlkaW5nIGlzIGEgcHJlLWNsZWFuZWQgZGF0YSBzZXQgZm9yIHNpbXBsaWNpdHkgYW5kIHRvIHNob3cgdGhlIHBpcGVsaW5lIGZyb20gc3RhcnQgdG8gZmluaXNoLiBJZiB3ZSBoYXZlIHRpbWUsIHdlJ2xsIGxvb2sgYXQgYSBtb3JlIGNvbXBsaWNhdGVkIHNldCBvZiBkYXRhIHRoYXQgcmVxdWlyZXMgbW9yZSBwcmUtcHJvY2Vzc2luZyBiZWZvcmUgd2UgY2FuIGxvb2sgYXQgaXQuIA0KDQpUaGVyZSBhcmUgbWFueSBjb2RpbmcgbGFuZ3VhZ2VzIHlvdSBjYW4gdXNlIHRvIHdvcmsgd2l0aCB5b3VyIGRhdGEuIEluIHRoaXMgdHV0b3JpYWwsIEkgYW0gZ29pbmcgdG8gdXNlIFN0cnVjdHVyZWQgUXVlcnkgTGFuZ3VhZ2UgKFNRTCkgYW5kIFIuIFRvIG1hbmFnZSBTUUwgZGF0YSwgSSB3aWxsIHNob3cgYW4gZXhhbXBsZSB3aXRoIFtNeVNRTF0oaHR0cHM6Ly93d3cubXlzcWwuY29tL3Byb2R1Y3RzL2NvbW11bml0eS8pLiBUaGlzIGlzIGp1c3Qgb25lIGRhdGFiYXNlIG1hbmFnZW1lbnQgc3lzdGVtLCBhbmQgbWFueSBvZiB0aGUgc2FtZSBwcmluY2lwbGVzIHdpbGwgYXBwbHkgaWYgeW91J3JlIHVzaW5nIG90aGVyIHBvcHVsYXIgU1FMIGRhdGFiYXNlIG1hbmFnZW1lbnQgc3lzdGVtcyBsaWtlIFtTUUxpdGVdKGh0dHBzOi8vd3d3LnNxbGl0ZS5vcmcvZG93bmxvYWQuaHRtbCkgb3IgW1Bvc3RncmVTUUxdKGh0dHBzOi8vd3d3LnBvc3RncmVzcWwub3JnL2Rvd25sb2FkLykuIFlvdSBqdXN0IG5lZWQgdG8gY2hhbmdlIHRoZSBSIHBhY2thZ2UgeW91IGFyZSB1c2luZyB0byBpbnRlcmZhY2Ugd2l0aCB0aGUgU1FMIGRhdGFiYXNlIG1hbmFnZW1lbnQgc3lzdGVtIHlvdSBhcmUgdXNpbmcuDQoNCkknbGwgYWxzbyBicmllZmx5IGRlbW9uc3RyYXRlIGltcG9ydGluZyB5b3VyIGRhdGEgZGlyZWN0bHkgaW50byBbUl0oaHR0cHM6Ly9jcmFuLnItcHJvamVjdC5vcmcvIA0KKSBhbmQgc29tZSBjb21tb24gcGl0ZmFsbHMgLyB3aHkgdGhlIFNRTCBhcHByb2FjaCBjYW4gYmUgcHJlZmVyYWJsZS4NCg0KT25jZSBvdXIgZGF0YSBpcyBpbiBbUl0oaHR0cHM6Ly9jcmFuLnItcHJvamVjdC5vcmcvIA0KKSB1c2luZyBbUlN0dWRpb10oaHR0cHM6Ly9wb3NpdC5jby9kb3dubG9hZC9yc3R1ZGlvLWRlc2t0b3AvIA0KKSwgYSBwb3B1bGFyIGludGVncmF0ZWQgZGV2ZWxvcG1lbnQgZW52aXJvbm1lbnQgKElERSkgZm9yIFIsIHdlJ2xsIGRvIHNvbWUgcXVpY2sgdmlzdWFsaXphdGlvbnMsIGludHJvZHVjaW5nIHlvdSB0byBhIHBvcHVsYXIgY29sbGVjdGlvbiBvZiBSIGNvZGluZyBwYWNrYWdlcyBjYWxsZWQgdGhlIFsndGlkeXZlcnNlJ10oaHR0cHM6Ly93d3cudGlkeXZlcnNlLm9yZy8pLiBUaGlzIHNoYXJlcyBtYW55IHByaW5jaXBsZXMgd2l0aCB0aGUgWydwYW5kYXMnXShodHRwczovL3BhbmRhcy5weWRhdGEub3JnLykgc29mdHdhcmUgbGlicmFyeSBpbiBbUHl0aG9uXShodHRwczovL3d3dy5weXRob24ub3JnL2Rvd25sb2Fkcy8pLiBTbyB3aGlsZSB3ZSB3aWxsIHdvcmsgaW4gUi9SU3R1ZGlvIHRvZGF5LCBhZ2FpbiwgbWFueSBvZiB0aGUgaWRlYXMgb3IgcHJvY2Vzc2VzIGNhbiBiZSByZXBsaWNhdGVkIGluIFB5dGhvbiAoZm9yIGV4YW1wbGUgdXNpbmcgdGhlIFtQeUNoYXJtIElERV0oaHR0cHM6Ly93d3cuamV0YnJhaW5zLmNvbS9weWNoYXJtL2Rvd25sb2FkLykpLiBJdCdzIGp1c3QgYSBtYXR0ZXIgb2YgcGVyc29uYWwgcHJlZmVyZW5jZSA6KSANCg0KVG8gbWFuYWdlIG91ciBSIGNvZGVzIGFuZCB0YWtlIG5vdGVzIC8gc2hhcmUgaW50ZXJpbSBwbG90cywgd2UnbGwgYmUgdXNpbmcgYSBtYXJrZG93biBmaWxlLiBJJ20gdHlwaW5nIHRoaXMgdHV0b3JpYWwgcmlnaHQgbm93IGluIGFuIFIgTWFya2Rvd24gZmlsZS4gVmVyeSBtZXRhLiBBbm90aGVyIHBvcHVsYXIgcGllY2Ugb2Ygc29mdHdhcmUgZm9yIG1hcmtkb3duIGZpbGVzIHdpdGggZW1iZWRkZWQgUiBvciBQeXRob24gY29kaW5nIGlzIFtKdXB5dGVyIE5vdGVib29rc10oaHR0cHM6Ly9qdXB5dGVyLm9yZy8pLiBXZSB3b24ndCBydW4gYW55IEp1cHl0ZXIgbm90ZWJvb2tzLCBidXQgSSB3aWxsIHNob3cgeW91IGJyaWVmbHkgd2hhdCB0aGV5J3JlIGFsbCBhYm91dC4gDQoNCkFzIHdlIHdvcmsgdGhyb3VnaCBvdXIgZGF0YSwgd2UgYWxsIGtub3cgdGhhdCBhbmFseXNpcyBjYW4gdGFrZSB0aW1lLiBPciBwZXJoYXBzIHdlIHdhbnQgdG8gcnVuIGEgY29kZSB0aGF0IG1pZ2h0IGJyZWFrIGV2ZXJ5dGhpbmcgKGhhcHBlbnMgdG8gdGhlIGJlc3Qgb2YgdXMhKSBhbmQgd2Ugd2FudCB0byBtYWtlIHN1cmUgd2UgY2FuIHJlc3RvcmUgb3VyIHByZXZpb3VzIGNvZGUuIFZlcnNpb24gY29udHJvbCBpcyB5b3VyIGZyaWVuZCBoZXJlIGFuZCBpdCdzIHNvIGVhc3kgdG8gZG8gd2l0aCBbR2l0XShodHRwczovL2dpdC1zY20uY29tL2Rvd25sb2FkcyksIHdoaWNoIGlzIGEgZGlzdHJpYnV0ZWQgdmVyc2lvbiBjb250cm9sIHN5c3RlbSB0aGF0IHRyYWNrcyBjaGFuZ2VzIGluIGFueSBzZXQgb2YgY29tcHV0ZXIgZmlsZXMuIFdlJ2xsIHVzZSB0aGUgW0dpdGh1Yl0oaHR0cHM6Ly9naXRodWIuY29tL2pvaW4gDQopIHBsYXRmb3JtIGFzIG91ciBjb252ZW5pZW50IGNsb3VkLWJhc2VkIHN5c3RlbSB0byBleGVjdXRlIG91ciBHaXQgdmVyc2lvbiBjb250cm9sLiBBIG5pY2UgZmVhdHVyZSBvZiBHaXRodWIgaXMgdGhhdCB3ZSBjYW4gYWxzbyBlYXNpbHkgY29udmVydCBvdXIgTWFya2Rvd24gZmlsZXMgaW50byB3ZWJwYWdlcyAod2hpY2ggaXMgd2hhdCB5b3UncmUgcmVhZGluZyByaWdodCBub3chKS4gU28gY29vbCwgcmlnaHQ/DQoNCkxhc3RseSwgaWYgeW91IGhhdmUgYSBsb3Qgb2YgZGF0YSBiZWluZyBjb2xsZWN0ZWQgcm91dGluZWx5LCBpdCBjYW4gYmUgY29vbCB0byBzaG93IHlvdXIgZGF0YS4gV2UnbGwgZG8gYSBzaW1wbGUgZXhhbXBsZSBpbiBbR3JhZmFuYV0oaHR0cHM6Ly9ncmFmYW5hLmNvbS9ncmFmYW5hL2Rvd25sb2FkKSwgd2hpY2ggaXMgYW4gb3BlbiBzb3VyY2UgYW5hbHl0aWNzIGFuZCBpbnRlcmFjdGl2ZSB2aXN1YWxpemF0aW9uIHdlYiBhcHBsaWNhdGlvbi4NCg0KV2hhdCB3ZSdsbCBjb3ZlciB0b2RheSBpcyBhIGxvdCBmb3IgYSAxIGhvdXIgNDUgbWludXRlIHNlc3Npb24gLSBhbmQgdGhhdCdzIG9rYXkhIFRoZSBnb2FsIGlzIHRoYXQgeW91IGNvbWUgb3V0IG9mIHRoaXMgdHV0b3JpYWwgd2l0aCBzb21lIGlkZWFzLCBuZXcgdGVybWlub2xvZ3kgYW5kIGFuIGludGVyZXN0IGluIGxlYXJuaW5nIG1vcmUuIElmIHlvdSB0YWtlIHRoZSB0aW1lIHRvIGxlYXJuIHRoZXNlIHByaW5jaXBsZXMgYW5kIGFwcHJvYWNoZXMgZWFybHkgb24gaW4geW91ciBwcm9ncmFtLCB5b3UnbGwgaGF2ZSBhbiBlYXNpZXIgdGltZSBkb3duIHRoZSByb2FkIHdoZW4geW91J3JlIHRyeWluZyB0byBhZGRyZXNzIFJldmlld2VyIDIgY29tbWVudHMgYWxtb3N0IGEgeWVhciBhZnRlciBhIHBhcGVyIHdhcyBvcmlnaW5hbGx5IGRldmVsb3BlZCwgYmVjYXVzZSB5b3UgbGVmdCB5b3Vyc2VsZiBhbiBhd2Vzb21lIHBhcGVyIHRyYWlsLiBGdXR1cmUgeW91IGlzIGFscmVhZHkgdGhhbmtpbmcgeW91ISBOb3cgd2l0aG91dCBmdXJ0aGVyIGFkbywgbGV0J3MgZ2V0IHN0YXJ0ZWQuDQoNCiMjIEdldHRpbmcgeW91cnNlbGYgc2V0LXVwDQpJZiB5b3Ugd2FudCB0byBmb2xsb3cgYWxvbmcgaW4gcmVhbC10aW1lLCB5b3UnbGwgbmVlZCB0aGUgZm9sbG93aW5nIHRvb2xzIGluc3RhbGxlZCBvbiB5b3VyIG1hY2hpbmUuIE5vdGUgdGhhdCBJIHRlc3RlZCB0aGlzIHR1dG9yaWFsIGluIHRoZSBXaW5kb3dzIG9wZXJhdGluZyBzeXN0ZW0uIEkgY2FuJ3QgbWFrZSBhbnkgZ3VhcmFudGVlcyBpdCB3aWxsIHdvcmsgMTAwJSBzbW9vdGhseSBpbiBhIG1hY09TIG9yIExpbnV4IG9wZXJhdGluZyBzeXN0ZW0sIGJ1dCB0aGVyZSBzaG91bGRuJ3QgYmUgdG9vIG1hbnkgcGl0ZmFsbHMgd2l0aCB0aGlzLg0KDQpUb29scyBuZWVkZWQ6DQoNCiogTXlTUUwgWyhDbGljayBoZXJlIGZvciBZb3VUdWJlIHR1dG9yaWFsIGZvciBpbnN0YWxsaW5nIE15U1FMIG9uIFdpbmRvd3MgMTEpXShodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PXFCQlhCWlhLaTB3KQ0KKiBSIGFuZCBSU3R1ZGlvIFsoQ2xpY2sgaGVyZSBmb3IgWW91VHViZSB0dXRvcmlhbCBmb3IgaW5zdGFsbGluZyBSIGFuZCBSU3R1ZGlvKV0oaHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1ZckVlMlRMcjNNSSkNCiogR2l0IGFuZCBhIEdpdGh1YiBhY2NvdW50IFsoQ2xpY2sgaGVyZSBmb3IgYSBHaXRodWIgR3VpZGUgb24gSW5zdGFsbGluZyBHaXQpXShodHRwczovL2dpdGh1Yi5jb20vZ2l0LWd1aWRlcy9pbnN0YWxsLWdpdCkNCiogQ29ubmVjdCBHaXQgdG8gUlN0dWRpbyBbKENsaWNrIGhlcmUgZm9yIGEgWW91VHViZSB0dXRvcmlhbCBvbiBjb25uZWN0aW5nIEdpdCBhbmQgR2l0aHViIHRvIGFuIFJTdHVkaW8gUHJvamVjdCldKGh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9YlVvTjg1UXZDMTApDQoNCk90aGVyIG5vdGVzOg0KDQoqIFRoaXMgdHV0b3JpYWwgd2lsbCByZXF1aXJlIGEgYnVuY2ggb2YgUiBwYWNrYWdlcyB0byBiZSBpbnN0YWxsZWQgLSBidXQgZG9uJ3Qgd29ycnksIEkgaGF2ZSBwYXJ0cyBvZiB0aGUgY29kZSBibG9ja3MgYmVsb3cgdGhhdCB3aWxsIGluc3RhbGwgYW55IFIgcGFja2FnZXMgeW91IG1pZ2h0IG5lZWQgdGhhdCB5b3UgZG9uJ3QgYWxyZWFkeSBoYXZlIDopDQoqIEFsbCB0aGUgZGF0YSwgY29kZXMgYW5kIG1hcmtkb3duIGZpbGVzIGFyZSBhdmFpbGFibGUgaW4gdGhlIEdpdGh1YiByZXBvc2l0b3J5IFsoQ2xpY2sgaGVyZSB0byBhY2Nlc3MpXShodHRwczovL2dpdGh1Yi5jb20vbnppbW1lcm1hbi11YmMvQUFBUjIwMjMtdHV0b3JpYWwpDQoqIElmIHlvdSBqdXN0IHdhbnQgdGhlIFIgTWFya2Rvd24gZmlsZSwgeW91IGNhbiBkb3dubG9hZCBpdCBmcm9tIHRoZSB1cHBlciByaWdodCBjb3JuZXIgb2YgdGhlIHBhZ2UuDQoNCiMgUGFydCAxOiBTUUwgU2V0LXVwIGFuZCBMb2dpc3RpY3MNClNvIGZpcnN0IHRoaW5ncyBmaXJzdCwgd2UncmUgZ29pbmcgdG8gbWFrZSBzdXJlIHdlIGhhdmUgc2V0IHVwIGFuZCBjb25maWd1cmVkIE15U1FMIG9uIG91ciBtYWNoaW5lLiBXZSdsbCBkbyB0aGlzIHBhcnQgbGl2ZSwgc28gZm9sbG93IGFsb25nLiBXZSBjYW4gaW50ZXJhY3Qgd2l0aCBNeVNRTCBpbiBhIGZldyB3YXlzOg0KDQoqIE15U1FMIFdvcmtiZW5jaDogQSBHcmFwaGljYWwgVXNlciBJbnRlcmZhY2UgZm9yIHlvdXIgU1FMIGRhdGENCiogVGhlIGNvbW1hbmQgbGluZQ0KDQpUaGUgbmljZSB0aGluZyBhYm91dCB0aGUgd29ya2JlbmNoIGlzIHRoYXQgaXQgY2FuIGhlbHAgeW91IGxlYXJuIGhvdyB0byB3cml0ZSBhbmQgcGFyc2UgU1FMIHF1ZXJpZXMsIHNpbmNlIGl0IHdpbGwgdHJhbnNsYXRlIHlvdXIgcmVxdWVzdCBpbnRvIHRoZSBxdWVyeS4gU28gd2UnbGwgbW9zdGx5IGJlIHVzaW5nIHRoZSBXb3JrYmVuY2ggdG8gY2hlY2sgdGhhdCBvdXIgd29yayBpcyBiZWluZyBzdG9yZWQgY29ycmVjdGx5LCBidXQgSSB3aWxsIHNob3cgc29tZSBxdWljayBleGFtcGxlcyBpbiB0aGUgY29tbWFuZCBsaW5lIHRvbyBsYXRlciBvbiBpbiB0aGUgdHV0b3JpYWwuIA0KDQpPbmNlIHdlIGhhdmUgc2V0IHVwIE15U1FMIG9uIG91ciBtYWNoaW5lLCB3ZSBuZWVkIHRvIG1ha2Ugc3VyZSANClRoZSBmaXJzdCB0aGluZyB3ZSBuZWVkIHRvIGRvLCBpcyBhZGQgb3VyIGV4cGVyaW1lbnQgZGF0YSB0byBNeVNRTCBzbyB3ZSBjYW4gcXVlcnkgdGhlIGRhdGEgaW4gUi4gV2hpbGUgdGhlc2Ugc3RlcHMgb2NjdXIgb3V0c2lkZSBvZiBSU3R1ZGlvLCBJIGhhdmUgaW5jbHVkZWQgc29tZSBzY3JlZW5zaG90cyBoZXJlIHNvIHlvdSBjYW4gZm9sbG93IGFsb25nLiBUaGVyZSBhcmUgYSBmZXcgb3B0aW9ucyB0byBhZGQgZGF0YSB0byBNeVNRTC4gSGVyZSBJIHdpbGwgZGVzY3JpYmUgdHdvIG9mIHRoZW06DQoNCg0KDQojIyBIb3VzZWtlZXBpbmcNCldlIGFyZSBnb2luZyB0byBkbyBhIGZldyB0aGluZ3MgdG8gZ2V0IHN0YXJ0ZWQhDQoNCi0gSW5zdGFsbCB0aGUgbmVjZXNzYXJ5IHBhY2thZ2VzDQotIExvYWQgdGhlIG5lY2Vzc2FyeSBwYWNrYWdlcw0KDQpgYGB7ciBzZXR1cCwgaW5jbHVkZT1UUlVFfQ0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQ0KDQojIExvYWQgcGFja2FnZXMgLSBJIGxpa2UgdG8gdXNlIHRoZSBwYWNtYW4gcGFja2FnZSB0byBkbyB0aGlzIG1vcmUgZWxlZ2FudGx5Lg0KaWYgKCFyZXF1aXJlKCJwYWNtYW4iKSkgaW5zdGFsbC5wYWNrYWdlcygicGFjbWFuIik7IGxpYnJhcnkocGFjbWFuKQ0KDQojIFRoZSBwYWNtYW4gcGFja2FnZSBoYXMgYSBuaWNlIGZ1bmN0aW9uICdwX2xvYWQoKScgdGhhdCB3aWxsIGxvYWQgdGhlIGxpc3RlZCBwYWNrYWdlcyBhbmQgaW5zdGFsbCB0aGVtIGlmIHRoZXkgYXJlIG5vdCBhbHJlYWR5IGluc3RhbGxlZC4NCnBfbG9hZChEQkksUk9EQkMsb2RiYyxkYnBseXIsUk15U1FMLHRpZHl2ZXJzZSxrZXlyaW5nLGNvbjJhcWksbHVicmlkYXRlLCBzdHJpbmdyKQ0KDQojIENoZWNrIHRoYXQgTXlTUUwgaXMgbGlzdGVkLCBpZiBpdCBpc24ndCBuZWVkIHRvIHByb3ZpZGUgc3RlcHMuDQpzb3J0KHVuaXF1ZShvZGJjTGlzdERyaXZlcnMoKVtbMV1dKSkNCg0Kc3FsX2Nvbm4gPC0gZGJDb25uZWN0KFJNeVNRTDo6TXlTUUwoKSwNCiAgICAgICAgICAgICAgICAgIGRibmFtZSA9ICJhYWFyMjAyM3R1dG9yaWFsIiwNCiAgICAgICAgICAgICAgICAgIFNlcnZlciA9ICJsb2NhbGhvc3QiLA0KICAgICAgICAgICAgICAgICAgcG9ydCA9IDMzMDYsDQogICAgICAgICAgICAgICAgICB1c2VyID0gInJvb3QiLA0KICAgICAgICAgICAgICAgICAgcGFzc3dvcmQgPSBrZXlfZ2V0KCJNWVNRTF9QQVNTV09SRCIpDQogICAgICAgICAgICAgICAgICApDQppbml0aWFsX3J1bj0wDQoNCmlmKGluaXRpYWxfcnVuPT0xKXsNCiAgIyMgRklSU1QgVElNRSBPTkxZIQ0KIyBsb2FkIHNvbWUgZGF0YQ0KbWV0YWRhdGEgPC0gcmVhZF9jc3YoImRhdGEvZXhhbXBsZSAxL21ldGFkYXRhLmNzdiIpDQpOTzJfZGFpbHkgPC0gcmVhZF9jc3YoImRhdGEvZXhhbXBsZSAxL05PMl9kYWlseS5jc3YiLCBjb2xfdHlwZXMgPSBjb2xzKGRhdGUgPSBjb2xfY2hhcmFjdGVyKCkpKSAlPiUgbXV0YXRlKGRhdGU9bWR5KGRhdGUpLCBkYXRlPWZvcm1hdChkYXRlLCIlWS0lbS0lZCIpKQ0KDQpPM19kYWlseSA8LSByZWFkX2NzdigiZGF0YS9leGFtcGxlIDEvTzNfZGFpbHkuY3N2IiwgY29sX3R5cGVzID0gY29scyhkYXRlID0gY29sX2RhdGUoZm9ybWF0ID0gIiVtLyVkLyVZIikpKQ0KUE1fZGFpbHkgPC0gcmVhZF9jc3YoImRhdGEvZXhhbXBsZSAxL1BNX2RhaWx5LmNzdiIsIGNvbF90eXBlcyA9IGNvbHMoZGF0ZSA9IGNvbF9kYXRlKGZvcm1hdCA9ICIlbS8lZC8lWSIpKSkNCg0KIyBTbyB0aGF0IHdlIGNhbiBwZXJtaXQgd3JpdGluZyB0byBTUUwgZnJvbSBSIQ0KZGJTZW5kUXVlcnkoc3FsX2Nvbm4sICJTRVQgR0xPQkFMIGxvY2FsX2luZmlsZSA9IHRydWU7IikNCg0KIyBjcmVhdGUgYSB0YWJsZSBpbiB5b3VyIFNRTCBkYXRhYmFzZQ0KZGJDcmVhdGVUYWJsZShzcWxfY29ubixuYW1lPSJubzJfZGFpbHkiLCBmaWVsZHM9Tk8yX2RhaWx5KQ0KZGJDcmVhdGVUYWJsZShzcWxfY29ubixuYW1lPSJvM19kYWlseSIsIGZpZWxkcz1PM19kYWlseSkNCmRiQ3JlYXRlVGFibGUoc3FsX2Nvbm4sbmFtZT0icG1fZGFpbHkiLCBmaWVsZHM9UE1fZGFpbHkpDQoNCiMgd3JpdGUgb3VyIGRhdGEgdG8gdGhlIFNRTCBkYXRhYmFzZQ0KZGJXcml0ZVRhYmxlKHNxbF9jb25uLCJubzJfZGFpbHkiLE5PMl9kYWlseSxhcHBlbmQ9VFJVRSwgcm93Lm5hbWVzPUZBTFNFKQ0KZGJXcml0ZVRhYmxlKHNxbF9jb25uLCJvM19kYWlseSIsTzNfZGFpbHksYXBwZW5kPVRSVUUsIHJvdy5uYW1lcz1GQUxTRSkNCmRiV3JpdGVUYWJsZShzcWxfY29ubiwicG1fZGFpbHkiLFBNX2RhaWx5LGFwcGVuZD1UUlVFLCByb3cubmFtZXM9RkFMU0UpDQoNCmRiU2VuZFF1ZXJ5KHNxbF9jb25uLCJBTFRFUiBUQUJMRSBubzJfZGFpbHkgTU9ESUZZIGRhdGUgZGF0ZXRpbWU7IikNCmRiU2VuZFF1ZXJ5KHNxbF9jb25uLCJBTFRFUiBUQUJMRSBvM19kYWlseSBNT0RJRlkgZGF0ZSBkYXRldGltZTsiKQ0KZGJTZW5kUXVlcnkoc3FsX2Nvbm4sIkFMVEVSIFRBQkxFIHBtX2RhaWx5IE1PRElGWSBkYXRlIGRhdGV0aW1lOyIpDQp9DQoNCg0KDQoNCiMgbGV0J3MgcXVlcnkgb3VyIFNRTCBpbiBSISBMZXQncyBzYXkgd2UgYXJlIGludGVyZXN0ZWQgaW4gY2FsY3VsYXRpbmcgdGhlIEFRSSBmb3IgdGhlIHdlZWsgb2YgTWF5IDE1IC0gMjEsIDIwMjIgYXQgdGhlIE1haG9uIFBhcmsgc2l0ZSAoTVApDQpubzJfZGIgPSB0Ymwoc3FsX2Nvbm4sIm5vMl9kYWlseSIpICU+JSBzZWxlY3QoZGF0ZSxNUCkgJT4lIGZpbHRlcihiZXR3ZWVuKGRhdGUsIGFzLkRhdGUoJzIwMjItMDUtMTUnKSwgYXMuRGF0ZSgnMjAyMi0wNS0yMScpKSkgJT4lIHNob3dfcXVlcnkoKSAlPiUgY29sbGVjdCgpICU+JSByZW5hbWUoTk8yX01QID0gTVApDQpvM19kYiA9IHRibChzcWxfY29ubiwibzNfZGFpbHkiKSAlPiUgc2VsZWN0KGRhdGUsTVApICU+JSBmaWx0ZXIoYmV0d2VlbihkYXRlLCBhcy5EYXRlKCcyMDIyLTA1LTE1JyksIGFzLkRhdGUoJzIwMjItMDUtMjEnKSkpICU+JSBzaG93X3F1ZXJ5KCkgJT4lIGNvbGxlY3QoKSAlPiUgcmVuYW1lKE8zX01QID0gTVApDQpwbV9kYiA9IHRibChzcWxfY29ubiwicG1fZGFpbHkiKSAlPiUgc2VsZWN0KGRhdGUsTVApICU+JSBmaWx0ZXIoYmV0d2VlbihkYXRlLCBhcy5EYXRlKCcyMDIyLTA1LTE1JyksIGFzLkRhdGUoJzIwMjItMDUtMjEnKSkpICU+JSBzaG93X3F1ZXJ5KCkgJT4lIGNvbGxlY3QoKSAlPiUgcmVuYW1lKFBNX01QID0gTVApDQoNCiNsZXQncyBwdXQgaXQgdG9nZXRoZXIgaW50byBvbmUgZGF0YWZyYW1lIGZvciBvdXIgbG9jYWwgYW5hbHlzaXMNCmFxaSA8LSBsZWZ0X2pvaW4obm8yX2RiLCBvM19kYiwgYnk9J2RhdGUnKSAlPiUgbGVmdF9qb2luKC4sIHBtX2RiLCBieT0nZGF0ZScpICU+JSByb3d3aXNlKCkgJT4lDQogIG11dGF0ZShhcWkgPSBtYXgoY29uMmFxaSgicG0yNSIsUE1fTVApLGNvbjJhcWkoIm8zIixPM19NUC8xMDAwLCI4aCIpLGNvbjJhcWkoIm5vMiIsTk8yX01QKSkpDQoNCiMgbWF5YmUgbm93IHdlIHdhbnQgdG8gbWFrZSBhIGJveCBwbG90IG9mIHRoZSBubzIgY29uY2VudHJhdGlvbnMgYWNyb3NzIHNpdGVzIQ0Kbm8yX3RpZHkgPSB0Ymwoc3FsX2Nvbm4sIm5vMl9kYWlseSIpICU+JSBzZWxlY3QoLWRhdGUpICU+JSBzaG93X3F1ZXJ5KCkgJT4lIGNvbGxlY3QoKSAlPiUgcGl2b3RfbG9uZ2VyKGV2ZXJ5dGhpbmcoKSxuYW1lc190byA9ICJzaXRlIiwgdmFsdWVzX3RvID0gImNvbmNlbnRyYXRpb24iKQ0KDQojIENyZWF0ZSBhIGN1c3RvbSBvcmRlciBmb3IgdGhlICdzaXRlJyB2YXJpYWJsZQ0Kc2l0ZV9vcmRlciA8LSBjKCJCUyIsICJCSyIsICJNUCIsIlJTIiwiUjEwMDEiLCJSMTAwMiIsIlIxMDA0IiwiUjEwMDUiLCJSMTAwOCIsIlIxMDA5IiwiUjEwMTEiLCJSMTAxMiIsIlIxMDM5IiwiUjEwNDAiLCJSMTA0MSIpDQoNCiMgTWFrZSBib3ggcGxvdHMgZm9yIGV2ZXJ5dGhpbmcNCm5vMl9wbG90IDwtIGdncGxvdChubzJfdGlkeSwgYWVzKHggPSBmYWN0b3Ioc2l0ZSwgbGV2ZWxzID0gc2l0ZV9vcmRlciksIHkgPSBjb25jZW50cmF0aW9uLCBmaWxsPXNpdGUpKSArDQogIGdlb21fYm94cGxvdCgpICsNCiAgbGFicyh0aXRsZSA9ICJOTzIgQ29uY2VudHJhdGlvbnMgYnkgU2l0ZSIsDQogICAgICAgeCA9ICJTaXRlIiwNCiAgICAgICB5ID0gIkNvbmNlbnRyYXRpb24gKHBwYikiKSArDQogIHRoZW1lKGF4aXMudGV4dC54ID0gZWxlbWVudF90ZXh0KGFuZ2xlID0gOTAsIGhqdXN0ID0gMSksIGxlZ2VuZC5wb3NpdGlvbj0ibm9uZSIpICsNCiAgc2NhbGVfZmlsbF9kaXNjcmV0ZSgpICsNCiAgY29vcmRfY2FydGVzaWFuKHlsaW0gPSBjKDAsNjApKQ0Kbm8yX3Bsb3QNCg0KbzNfdGlkeSA9IHRibChzcWxfY29ubiwibzNfZGFpbHkiKSAlPiUgc2VsZWN0KC1kYXRlKSAlPiUgc2hvd19xdWVyeSgpICU+JSBjb2xsZWN0KCkgJT4lIHBpdm90X2xvbmdlcihldmVyeXRoaW5nKCksbmFtZXNfdG8gPSAic2l0ZSIsIHZhbHVlc190byA9ICJjb25jZW50cmF0aW9uIikNCg0KbzNfcGxvdCA8LSBnZ3Bsb3QobzNfdGlkeSwgYWVzKHggPSBmYWN0b3Ioc2l0ZSwgbGV2ZWxzID0gc2l0ZV9vcmRlciksIHkgPSBjb25jZW50cmF0aW9uLCBmaWxsPXNpdGUpKSArDQogIGdlb21fYm94cGxvdCgpICsNCiAgbGFicyh0aXRsZSA9ICJPMyBDb25jZW50cmF0aW9ucyBieSBTaXRlIiwNCiAgICAgICB4ID0gIlNpdGUiLA0KICAgICAgIHkgPSAiQ29uY2VudHJhdGlvbiAocHBiKSIpICsNCiAgdGhlbWUoYXhpcy50ZXh0LnggPSBlbGVtZW50X3RleHQoYW5nbGUgPSA5MCwgaGp1c3QgPSAxKSwgbGVnZW5kLnBvc2l0aW9uPSJub25lIikgKw0KICBzY2FsZV9maWxsX2Rpc2NyZXRlKCkgKw0KICBjb29yZF9jYXJ0ZXNpYW4oeWxpbSA9IGMoMCw2MCkpDQpvM19wbG90DQoNCnBtX3RpZHkgPSB0Ymwoc3FsX2Nvbm4sInBtX2RhaWx5IikgJT4lIHNlbGVjdCgtZGF0ZSkgJT4lIHNob3dfcXVlcnkoKSAlPiUgY29sbGVjdCgpICU+JSBwaXZvdF9sb25nZXIoZXZlcnl0aGluZygpLG5hbWVzX3RvID0gInNpdGUiLCB2YWx1ZXNfdG8gPSAiY29uY2VudHJhdGlvbiIpDQoNCnBtX3Bsb3QgPC0gZ2dwbG90KHBtX3RpZHksIGFlcyh4ID0gZmFjdG9yKHNpdGUsIGxldmVscyA9IHNpdGVfb3JkZXIpLCB5ID0gY29uY2VudHJhdGlvbiwgZmlsbD1zaXRlKSkgKw0KICBnZW9tX2JveHBsb3QoKSArDQogIGxhYnModGl0bGUgPSAiUE0yLjUgQ29uY2VudHJhdGlvbnMgYnkgU2l0ZSIsDQogICAgICAgeCA9ICJTaXRlIiwNCiAgICAgICB5ID0gIkNvbmNlbnRyYXRpb24gKHVnL20zKSIpICsNCiAgdGhlbWUoYXhpcy50ZXh0LnggPSBlbGVtZW50X3RleHQoYW5nbGUgPSA5MCwgaGp1c3QgPSAxKSwgbGVnZW5kLnBvc2l0aW9uPSJub25lIikgKw0KICBzY2FsZV9maWxsX2Rpc2NyZXRlKCkgKw0KICBjb29yZF9jYXJ0ZXNpYW4oeWxpbSA9IGMoMCwyMCkpDQpwbV9wbG90DQoNCiMgTm93IGxldCdzIG1ha2UgYSB0aW1lIHNlcmllcyBmb3IgdGhlIG1vbnRoIG9mIEp1bHkgMjAyMiBmb3IgYWxsIHBvbGx1dGFudHMNCm5vMl9qdWx5ID0gdGJsKHNxbF9jb25uLCJubzJfZGFpbHkiKSAlPiUgZmlsdGVyKG1vbnRoKGRhdGUpPT03KSAlPiVzaG93X3F1ZXJ5KCkgJT4lIGNvbGxlY3QoKSAlPiUgcGl2b3RfbG9uZ2VyKGNvbHM9YygyOjE2KSxuYW1lc190byA9ICJzaXRlIiwgdmFsdWVzX3RvID0gImNvbmNlbnRyYXRpb24iKQ0KDQpnZ3Bsb3Qobm8yX2p1bHksIGFlcyh4ID0gZGF0ZSwgeSA9IGNvbmNlbnRyYXRpb24sIGNvbG9yID0gc2l0ZSkpICsNCiAgZ2VvbV9saW5lKG5hLnJtPVRSVUUpICsNCiAgbGFicyh0aXRsZSA9ICJUaW1lIFNlcmllcyBvZiBEYXRhIGZvciBKdWx5IiwNCiAgICAgICB4ID0gIkRhdGUiLA0KICAgICAgIHkgPSAiTk8yIENvbmNlbnRyYXRpb24gKHBwYikiKQ0KDQojIFJlYWQgZGF0YSBpbnRvIEdyYWZhbmENCg0KIyBNYWtlIGEgdXNlciB0aGF0IGNhbiBvbmx5IHJlYWQgb3VyIFNRTCBkYXRhYmFzZSBjYWxsZWQgImdyYWZhbmEtZGVtbyINCg0KIyBDUkVBVEUgVVNFUiAnZ3JhZmFuYS1kZW1vJ0AnbG9jYWxob3N0JyBJREVOVElGSUVEIEJZICdhYWFydHV0b3JpYWwnDQoNCiMgU0VMRUNUIFVzZXIgZnJvbSBteXNxbC51c2VyIHRvIHZpZXcgb3VyIHVzZXJzDQoNCiMgR1JBTlQgU0VMRUNUIE9OIGRhdGFiYXNlX25hbWUudGFibGVfbmFtZSBUTyAndXNlcm5hbWUnQCdsb2NhbGhvc3QnOw0KDQojIEZMVVNIIFBSSVZJTEVHRVM7DQoNCg0KYGBgDQoNCg0KDQoNCg0KDQo=</div>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("index.Rmd");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
+>>>>>>> 331b139fc788c13e743ad1f369492807a6434ab0
