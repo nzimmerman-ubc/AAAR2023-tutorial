@@ -89,7 +89,7 @@ I like the 'pacman' package to streamline this process, since you can just give 
 if (!require("pacman")) install.packages("pacman"); library(pacman)
 
 # Install / load required packages
-p_load(DBI,RODBC,odbc,dbplyr,RMySQL,tidyverse,keyring,con2aqi,lubridate, stringr)
+p_load(DBI,RODBC,odbc,dbplyr,RMySQL,tidyverse,keyring,con2aqi,lubridate, stringr,plyr)
 ```
 
 ### R Set-up: SQL Connection
@@ -285,6 +285,116 @@ Now let's hop on over to Grafana and see what we can do. In general this will co
 
 * Connecting to our MySQL data source (just a one time thing)
 * Creating new panels for our dashboard either using SQL Query or with their interactive code builder.
+
+# Part 4: Some messier data
+
+Now let's imagine we have some data as it is outputted directly from an instrument. Let's go with a WCPC for example. In our example 2 data folder, we have 5 separate csv files from 5 different days, and the data doesn't start cleanly. Let's process this to concatenate the files and extract the relevant stuff!
+
+## Load the data and choose column names we like
+
+```{r ex2-load}
+# First get the names of all the files in our WCPC raw folder:
+file_names <- list.files(path = "data/example 2/WCPC raw/", pattern = "*.csv", full.names = TRUE)
+
+# Use lapply to read and concatenate the data
+data_list <- lapply(file_names, function(file) {
+  read.csv(file, skip = 16)
+})
+
+# Combine the list of data frames into one data frame using bind_rows
+concatenated_cpc <- bind_rows(data_list)
+
+# Give the columns nicer names
+new_names <- c("datetime", "elapsed", "concentration", "counts", "error_code")
+names(concatenated_cpc) <- new_names
+
+#Clean up any blank rows lingering around from the csv:
+concatenated_cpc <- concatenated_cpc %>%
+  filter(datetime != "" & !is.na(datetime))
+
+knitr::kable(head(concatenated_cpc))
+
+```
+Now that we are generally happy with the format of the data, let's ship it out to our SQL database and then get it into Grafana. Recall this will involve a few steps:
+
+1. If it doesn't already exist, make an empty table in your SQL database.
+2. Write the data to our new empty table.
+3. Force our datetime column to have the right format with 'sendQuery'.
+4. Make our dashboard in Grafana!
+
+```{r ex2-ship}
+
+#### FIRST TIME RUNNING
+
+# Remember you should only create the table once!
+dbCreateTable(sql_conn,name="wcpc", fields=concatenated_cpc)
+
+# Write our data to the SQL database
+dbWriteTable(sql_conn,"wcpc",concatenated_cpc,append=TRUE, row.names=FALSE)
+
+# Clean up datetime
+dbSendQuery(sql_conn,"ALTER TABLE wcpc MODIFY datetime datetime;")
+
+```
+Maybe now we want to run this again to check for new files and append them...
+
+```{r ex2-new files}
+
+# Specify the path to the subdirectory containing the CSV files
+subdirectory_path <- "data/example 2/WCPC raw"  # Update with the actual path
+
+# Specify the path to the text file for storing file information
+info_file <- "file_info.txt"
+
+# Function to read file information from the text file
+read_file_info <- function(filename) {
+  if (file.exists(filename)) {
+    readLines(filename)
+  } else {
+    character(0)
+  }
+}
+
+# Create an empty data frame to store the concatenated data
+concatenated_cpc <- data.frame()
+
+
+  # Read the list of files currently in the directory
+  current_files <- list.files(path = subdirectory_path, pattern = "*.csv", full.names = TRUE)
+  
+  # Read the list of files previously stored in the text file
+  previous_files <- read_file_info("file_info.txt")
+  
+  # Find the new files that are not in the list of previously stored files
+  new_files <- setdiff(current_files, previous_files)
+  
+  # Read and append the data from new files
+  if (length(new_files) > 0) {
+    new_data_list <- lapply(new_files, function(file) {
+      read.csv(file, skip = 16)
+    })
+    
+    new_data <- bind_rows(new_data_list)
+    
+    # Append the new data to the concatenated_data data frame
+    concatenated_cpc <- bind_rows(concatenated_cpc, new_data)
+    
+    # Give the columns nicer names
+    new_names <- c("datetime", "elapsed", "concentration", "counts", "error_code")
+    names(concatenated_cpc) <- new_names
+
+    #Clean up any blank rows lingering around from the csv:
+    concatenated_cpc <- concatenated_cpc %>%
+      filter(datetime != "" & !is.na(datetime))
+    
+    # Append the new file names to the text file
+    writeLines(new_files, "file_info.txt", append = TRUE)
+    
+    # Optionally, you can print a message indicating new data has been added
+    cat("New data added from:", new_files, "\n")
+  }
+```
+
 
 
 
