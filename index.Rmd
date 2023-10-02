@@ -47,6 +47,16 @@ Other notes:
 * All the data, codes and markdown files are available in the Github repository [(Click here to access)](https://github.com/nzimmerman-ubc/AAAR2023-tutorial)
 * If you just want the R Markdown file, you can download it from the upper right corner of the page.
 
+# Part 0: Version Control
+In developing this tutorial, I used version control using Git and Github. If you're in academia, Github is great because you can get access to many paid features for free (making pages from private repositories, creating organizations, etc.). You can interact with Git in RStudio very easily after it's installed (see links from the Introduction). Once you've successfully installed Git and made it accessible in RStudio, you'll see a little "Git" tab in the top right panel. We can use this panel to quickly Commit changes to our repository, view file additions or deletions, etc. 
+
+Those who are familiar with Git may prefer to use the command line - that's outside of the scope of our tutorial today, but you can access the terminal from RStudio in the "Terminal" tab of the bottom left panel.
+
+I will now quickly demonstrate making a change, committing that change, and pushing my change to Github.
+
+## Forking the directory
+If you want to follow along in real-time with this tutorial, navigate to this tutorial's repository [(Click here to access)](https://github.com/nzimmerman-ubc/AAAR2023-tutorial) and create a fork (which will create a local copy in your own repository). 
+
 # Part 1: SQL Set-up and Logistics
 So first things first, we're going to make sure we have set up and configured MySQL on our machine. We'll do this part live, so follow along. We can interact with MySQL in a few ways:
 
