@@ -72,7 +72,7 @@ knitr::opts_chunk$set(echo = TRUE)
 if (!require("pacman")) install.packages("pacman"); library(pacman)
 
 # The pacman package has a nice function 'p_load()' that will load the listed packages and install them if they are not already installed.
-p_load(DBI,RODBC,odbc,dbplyr,RMySQL,tidyverse,keyring,con2aqi)
+p_load(DBI,RODBC,odbc,dbplyr,RMySQL,tidyverse,keyring,con2aqi,lubridate, stringr)
 
 # Check that MySQL is listed, if it isn't need to provide steps.
 sort(unique(odbcListDrivers()[[1]]))
@@ -84,12 +84,16 @@ sql_conn <- dbConnect(RMySQL::MySQL(),
                   user = "root",
                   password = key_get("MYSQL_PASSWORD")
                   )
+initial_run=0
 
+if(initial_run==1){
+  ## FIRST TIME ONLY!
 # load some data
 metadata <- read_csv("data/example 1/metadata.csv")
-NO2_daily <- read_csv("data/example 1/NO2_daily.csv", col_types = cols(time = col_date(format = "%m/%d/%Y")))
-O3_daily <- read_csv("data/example 1/O3_daily.csv", col_types = cols(time = col_date(format = "%m/%d/%Y")))
-PM_daily <- read_csv("data/example 1/PM_daily.csv", col_types = cols(time = col_date(format = "%m/%d/%Y")))
+NO2_daily <- read_csv("data/example 1/NO2_daily.csv", col_types = cols(date = col_character())) %>% mutate(date=mdy(date), date=format(date,"%Y-%m-%d"))
+
+O3_daily <- read_csv("data/example 1/O3_daily.csv", col_types = cols(date = col_date(format = "%m/%d/%Y")))
+PM_daily <- read_csv("data/example 1/PM_daily.csv", col_types = cols(date = col_date(format = "%m/%d/%Y")))
 
 # So that we can permit writing to SQL from R!
 dbSendQuery(sql_conn, "SET GLOBAL local_infile = true;")
@@ -104,14 +108,85 @@ dbWriteTable(sql_conn,"no2_daily",NO2_daily,append=TRUE, row.names=FALSE)
 dbWriteTable(sql_conn,"o3_daily",O3_daily,append=TRUE, row.names=FALSE)
 dbWriteTable(sql_conn,"pm_daily",PM_daily,append=TRUE, row.names=FALSE)
 
+dbSendQuery(sql_conn,"ALTER TABLE no2_daily MODIFY date datetime;")
+dbSendQuery(sql_conn,"ALTER TABLE o3_daily MODIFY date datetime;")
+dbSendQuery(sql_conn,"ALTER TABLE pm_daily MODIFY date datetime;")
+}
+
+
+
+
 # let's query our SQL in R! Let's say we are interested in calculating the AQI for the week of May 15 - 21, 2022 at the Mahon Park site (MP)
-no2_db = tbl(sql_conn,"no2_daily") %>% select(time,MP) %>% filter(between(time, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(NO2_MP = MP)
-o3_db = tbl(sql_conn,"o3_daily") %>% select(time,MP) %>% filter(between(time, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(O3_MP = MP)
-pm_db = tbl(sql_conn,"pm_daily") %>% select(time,MP) %>% filter(between(time, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(PM_MP = MP)
+no2_db = tbl(sql_conn,"no2_daily") %>% select(date,MP) %>% filter(between(date, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(NO2_MP = MP)
+o3_db = tbl(sql_conn,"o3_daily") %>% select(date,MP) %>% filter(between(date, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(O3_MP = MP)
+pm_db = tbl(sql_conn,"pm_daily") %>% select(date,MP) %>% filter(between(date, as.Date('2022-05-15'), as.Date('2022-05-21'))) %>% show_query() %>% collect() %>% rename(PM_MP = MP)
 
 #let's put it together into one dataframe for our local analysis
-aqi <- left_join(no2_db, o3_db, by='time') %>% left_join(., pm_db, by='time') %>% rowwise() %>%
+aqi <- left_join(no2_db, o3_db, by='date') %>% left_join(., pm_db, by='date') %>% rowwise() %>%
   mutate(aqi = max(con2aqi("pm25",PM_MP),con2aqi("o3",O3_MP/1000,"8h"),con2aqi("no2",NO2_MP)))
+
+# maybe now we want to make a box plot of the no2 concentrations across sites!
+no2_tidy = tbl(sql_conn,"no2_daily") %>% select(-date) %>% show_query() %>% collect() %>% pivot_longer(everything(),names_to = "site", values_to = "concentration")
+
+# Create a custom order for the 'site' variable
+site_order <- c("BS", "BK", "MP","RS","R1001","R1002","R1004","R1005","R1008","R1009","R1011","R1012","R1039","R1040","R1041")
+
+# Make box plots for everything
+no2_plot <- ggplot(no2_tidy, aes(x = factor(site, levels = site_order), y = concentration, fill=site)) +
+  geom_boxplot() +
+  labs(title = "NO2 Concentrations by Site",
+       x = "Site",
+       y = "Concentration (ppb)") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position="none") +
+  scale_fill_discrete() +
+  coord_cartesian(ylim = c(0,60))
+no2_plot
+
+o3_tidy = tbl(sql_conn,"o3_daily") %>% select(-date) %>% show_query() %>% collect() %>% pivot_longer(everything(),names_to = "site", values_to = "concentration")
+
+o3_plot <- ggplot(o3_tidy, aes(x = factor(site, levels = site_order), y = concentration, fill=site)) +
+  geom_boxplot() +
+  labs(title = "O3 Concentrations by Site",
+       x = "Site",
+       y = "Concentration (ppb)") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position="none") +
+  scale_fill_discrete() +
+  coord_cartesian(ylim = c(0,60))
+o3_plot
+
+pm_tidy = tbl(sql_conn,"pm_daily") %>% select(-date) %>% show_query() %>% collect() %>% pivot_longer(everything(),names_to = "site", values_to = "concentration")
+
+pm_plot <- ggplot(pm_tidy, aes(x = factor(site, levels = site_order), y = concentration, fill=site)) +
+  geom_boxplot() +
+  labs(title = "PM2.5 Concentrations by Site",
+       x = "Site",
+       y = "Concentration (ug/m3)") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), legend.position="none") +
+  scale_fill_discrete() +
+  coord_cartesian(ylim = c(0,20))
+pm_plot
+
+# Now let's make a time series for the month of July 2022 for all pollutants
+no2_july = tbl(sql_conn,"no2_daily") %>% filter(month(date)==7) %>%show_query() %>% collect() %>% pivot_longer(cols=c(2:16),names_to = "site", values_to = "concentration")
+
+ggplot(no2_july, aes(x = date, y = concentration, color = site)) +
+  geom_line(na.rm=TRUE) +
+  labs(title = "Time Series of Data for July",
+       x = "Date",
+       y = "NO2 Concentration (ppb)")
+
+# Read data into Grafana
+
+# Make a user that can only read our SQL database called "grafana-demo"
+
+# CREATE USER 'grafana-demo'@'localhost' IDENTIFIED BY 'aaartutorial'
+
+# SELECT User from mysql.user to view our users
+
+# GRANT SELECT ON database_name.table_name TO 'username'@'localhost';
+
+# FLUSH PRIVILEGES;
+
 
 ```
 
